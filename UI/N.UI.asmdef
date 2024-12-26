@@ -1,7 +1,9 @@
 {
     "name": "N.UI",
     "rootNamespace": "N.UI",
-    "references": [],
+    "references": [
+        ""
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

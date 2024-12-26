@@ -1,11 +1,7 @@
 {
-    "name": "N.Game",
-    "rootNamespace": "N.Game",
-    "references": [
-        "N.Utills",
-        "N.Data",
-        "N.DesignPattern"
-    ],
+    "name": "N.Utills",
+    "rootNamespace": "N.Utills",
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
