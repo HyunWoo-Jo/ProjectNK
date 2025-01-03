@@ -1,5 +1,6 @@
 using UnityEngine;
 using N.Data;
+using System.Collections.Generic;
 namespace N.Game
 {
     public static class CameraFuntion 
@@ -32,5 +33,7 @@ namespace N.Game
             target.position = pos;
             cameraTr.rotation = Quaternion.LookRotation(direction, up);
         }
+
+      
     }
 }

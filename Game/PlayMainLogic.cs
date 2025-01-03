@@ -1,72 +1,54 @@
 using UnityEngine;
 using System.Collections.Generic;
 using static UnityEngine.GraphicsBuffer;
+using UnityEngine.Playables;
+using N.DesignPattern;
+using System;
 namespace N.Game
 {
     public class PlayMainLogic : MonoBehaviour
     {
-        [Header("Camera")]
-        private Camera _mainCamera;
-        [SerializeField] Transform _cameraPivotTr;
-        [SerializeField] Transform _cameraTraceTr;
-        private Vector3 _cameraTracePos;
-        private bool _isTraceCamera = true; 
+        private InGameData _gameData;
+        private CameraLogic _cameraLogic;
+        private List<InputLogic> _inputlogic_list = new List<InputLogic>();
+        //초기화
+        void Awake() {
+            _gameData = GetComponent<InGameData>();
 
+            MainLogicManager.Instance.SendModules(this);
 
-        [Header("Prop")]
-        [SerializeField] List<Transform> _wall_list = new ();
-
-       
-
-
-        // 초기화
-        void Awake()
-        {
-            _mainCamera = Camera.main;
-            ChangeSlot(0);
+            _cameraLogic.ChangeSlot(1);
         }
-        
+
+        #region Set modules 
+        // MainLogicManager.cs 에서 invoke를 통해 컨트롤
+        public void SetCamera<T>() where T : CameraLogic {
+            _cameraLogic = this.gameObject.AddComponent<T>();
+            _cameraLogic.Init(Camera.main, _gameData);
+        }
+
+        public void SetInput<T>() where T : InputLogic {
+            GameObject obj = new();
+            obj.isStatic = true;
+            obj.name = typeof(T).Name;
+            T inputLogic = obj.AddComponent<T>();
+            inputLogic.Init(_gameData);
+            _inputlogic_list.Add(inputLogic);
+        }
+        #endregion
 
         // Update is called once per frame
-        void Update()
-        {
-           // Test();
+        void Update() {
+            // Input Modules 제어
+            for(int i =0;i< _inputlogic_list.Count; i++) {
+                _inputlogic_list[i].WorkInput();
+            }
         }
 
         private void LateUpdate() {
-            // Camera
-            WorkCamera();
+            // Camera Module 제어
+            _cameraLogic.WorkCamera();
             //
-        }
-
-        // Camera
-        private void WorkCamera() {
-            if (_isTraceCamera) { // lerp Target
-                CameraFuntion.DistanceProportional(_mainCamera.transform, _cameraTraceTr, _cameraPivotTr, _cameraTracePos, 0.5f, new Vector3(0, 0.2f, -0.2f));
-                CameraFuntion.EaseInOutLerpTarget(_mainCamera.transform, _cameraTraceTr);
-            }
-            //
-        }
-
-        //Test
-        float timer = 5f;
-        int index = 0;
-        private void Test() {
-            timer += Time.deltaTime;
-
-            if (timer > 5) {
-                ChangeSlot(index);
-                index = _wall_list.Count > index + 1 ? index + 1 : 0;
-                timer -= 5;
-            }
-        }
-        //
-        /// <summary>
-        /// 슬롯 변경
-        /// </summary>
-        /// <param name="index"></param>
-        private void ChangeSlot(int index) {
-            _cameraTracePos = _wall_list[index].position;
         }
     }
 }

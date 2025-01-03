@@ -5,8 +5,8 @@ namespace N.DesignPattern
     [DefaultExecutionOrder(-100)] 
     public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
     {
-        private T _instance;
-        public T Instance { get { return _instance; } }
+        private static T _instance;
+        public static T Instance { get { return _instance; } }
 
         protected virtual void Awake() {
             if(_instance == null) {
