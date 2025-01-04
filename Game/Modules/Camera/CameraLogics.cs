@@ -34,7 +34,7 @@ namespace N.Game {
     public class StandardGameCameraLogic : CameraLogic {
         public override void WorkCamera() {
             if (_gameData.isTraceCamera) { // lerp Target
-                CameraFuntion.DistanceProportional(_mainCamera.transform, _gameData.cameraTraceTr, _gameData.cameraPivotTr, _gameData.cameraTracePos, 0.5f, new Vector3(0, 0.2f, -0.2f));
+                CameraFuntion.DistanceProportional(_mainCamera.transform, _gameData.cameraTraceTr, _gameData.cameraPivotTr, _gameData.cameraTracePos, 0.5f, new Vector3(0, 0.25f, -0.2f));
                 CameraFuntion.EaseInOutLerpTarget(_mainCamera.transform, _gameData.cameraTraceTr);
             }
         }

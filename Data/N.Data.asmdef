@@ -1,7 +1,11 @@
 {
     "name": "N.Data",
     "rootNamespace": "N.Data",
-    "references": [],
+    "references": [
+        "GUID:e2f3680e28f9b44489893672b35e7a7a",
+        "GUID:d5db902b885e11d45b02c35ef6ea9359",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

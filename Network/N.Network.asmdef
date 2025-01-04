@@ -1,7 +1,10 @@
 {
     "name": "N.Network",
     "rootNamespace": "N.Network",
-    "references": [],
+    "references": [
+        "N.DesignPattern",
+        "UniTask"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

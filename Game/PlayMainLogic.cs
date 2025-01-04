@@ -37,7 +37,7 @@ namespace N.Game
         }
         #endregion
 
-        // Update is called once per frame
+        
         void Update() {
             // Input Modules Á¦¾î
             for(int i =0;i< _inputlogic_list.Count; i++) {
