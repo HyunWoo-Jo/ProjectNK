@@ -10,6 +10,8 @@
 
 
 ### 메인 시스템
+#### Character Data Control flow
+<img width="698" alt="image" src="https://github.com/user-attachments/assets/db97628f-4553-4ccf-9a4a-007c98d4d6e4" />
 
 ### 네트워크 연동
 
