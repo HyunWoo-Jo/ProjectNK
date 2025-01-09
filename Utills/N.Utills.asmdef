@@ -1,7 +1,9 @@
 {
     "name": "N.Utills",
     "rootNamespace": "N.Utills",
-    "references": [],
+    "references": [
+        "GUID:f51ebe6a0ceec4240a699833d6309b23"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

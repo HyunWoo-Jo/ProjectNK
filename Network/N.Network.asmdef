@@ -3,7 +3,8 @@
     "rootNamespace": "N.Network",
     "references": [
         "N.DesignPattern",
-        "UniTask"
+        "UniTask",
+        "N.Utills"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
