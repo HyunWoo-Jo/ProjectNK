@@ -8,5 +8,9 @@ namespace N.Game
         internal void Init(Character owner) {
             _owner = owner;
         }
+
+        internal void Work() {
+
+        }
     }
 }

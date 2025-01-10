@@ -11,6 +11,7 @@ namespace N.Game
         private InGameData _gameData;
         private CameraLogic _cameraLogic;
         private List<InputLogic> _inputlogic_list = new List<InputLogic>();
+        private CombatLogic _combatLogic;
         //√ ±‚»≠
         void Awake() {
             _gameData = GetComponent<InGameData>();
@@ -28,13 +29,24 @@ namespace N.Game
         }
 
         public void SetInput<T>() where T : InputLogic {
-            GameObject obj = new();
-            obj.isStatic = true;
-            obj.name = typeof(T).Name;
-            T inputLogic = obj.AddComponent<T>();
+            T inputLogic = InstanceComponentObject<T>();
             inputLogic.Init(_gameData);
             _inputlogic_list.Add(inputLogic);
         }
+
+        public void SetCombat<T>() where T : CombatLogic {
+            T combatLogic = InstanceComponentObject<T>();
+
+        }
+
+        private T InstanceComponentObject<T>() where T : MonoBehaviour {
+            GameObject obj = new() {
+                isStatic = true,
+                name = typeof(T).Name
+            };
+            return obj.AddComponent<T>();
+        }
+
         #endregion
 
         
@@ -43,6 +55,7 @@ namespace N.Game
             for(int i =0;i< _inputlogic_list.Count; i++) {
                 _inputlogic_list[i].WorkInput();
             }
+            _combatLogic.WorkCombat();
         }
 
         private void LateUpdate() {
