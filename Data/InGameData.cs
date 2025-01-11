@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace N.Game
+namespace N.Data
 {
     /// <summary>
     /// 인게임에 필요한 데이터를 가지고 있는 클래스
@@ -19,5 +19,7 @@ namespace N.Game
 
         [Header("Input")]
         public Vector2 limitPos;
+
+        public List<CharacterStats> fieldCharacter_list = new();
     }
 }

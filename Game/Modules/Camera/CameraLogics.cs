@@ -1,6 +1,6 @@
 using System;
 using UnityEngine;
-
+using N.Data;
 namespace N.Game {
     public enum CameraLogicClassName{
         StandardGameCameraLogic,

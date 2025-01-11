@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using N.Data;
 namespace N.Game
 {
     public enum CombatLogicClassName {

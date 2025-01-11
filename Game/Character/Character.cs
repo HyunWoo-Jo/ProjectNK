@@ -11,7 +11,8 @@ namespace N.Game
     public class Character : MonoBehaviour
     {
         private CharacterState _state;
-        private string _name;
+
+        private CharacterData _data;
         private CharacterAI _ai;
         private Weapon _weapon;
 
@@ -27,7 +28,9 @@ namespace N.Game
             } else if (_state.Equals(CharacterState.AI)) {
                 _ai.Work();
             }
-
+        }
+        internal void ChangeState(CharacterState state) {
+            _state = state;
         }
     }
 }
