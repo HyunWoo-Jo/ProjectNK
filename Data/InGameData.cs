@@ -8,6 +8,9 @@ namespace N.Data
     /// </summary>
     public class InGameData : MonoBehaviour
     {
+        [Header("Canvas")]
+        public Canvas mainCanvas;
+
         [Header("Camera")]
         public Transform cameraPivotTr;
         public Transform cameraTraceTr;

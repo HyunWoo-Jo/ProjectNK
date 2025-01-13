@@ -5,10 +5,13 @@ using System.Collections.Generic;
 using N.Data;
 namespace N.Game
 {
+    /// <summary>
+    /// 메인 로직 셋팅을 넘겨주는 역할을 진행
+    /// </summary>
     public class MainLogicManager : Singleton<MainLogicManager>
     {
         public CameraLogicClassName _cameraLogicClassName = CameraLogicClassName.StandardGameCameraLogic;
-        public List<InputLogicClassName> _inputLogicClassName_list = new List<InputLogicClassName> { InputLogicClassName.InputLimitAimLogic };
+        public List<InputLogicClassName> _inputLogicClassName_list = new List<InputLogicClassName> { InputLogicClassName.InputScreenLimitLogic, InputLogicClassName.InputCombatAimLogic };
         public List<CharacterStats> character_list = new();
 
 

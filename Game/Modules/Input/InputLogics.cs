@@ -4,8 +4,8 @@ using N.Data;
 namespace N.Game
 {
     public enum InputLogicClassName {
-        InputLimitAimLogic,
-
+        InputScreenLimitLogic,
+        InputCombatAimLogic,
     }
 
     public abstract class InputLogic : MonoBehaviour
@@ -19,9 +19,13 @@ namespace N.Game
         }
 
         public abstract void WorkInput();
+        /// <summary>
+        /// UI »ý¼º
+        /// </summary>
+        public virtual void Instance_UI() { }
     }
 
-    public class InputLimitAimLogic : InputLogic {
+    public class InputScreenLimitLogic : InputLogic {
 
         public override void WorkInput() {
             if (Input.GetMouseButton(0)) {
@@ -35,4 +39,18 @@ namespace N.Game
         }
     }
 
+    public class InputCombatAimLogic : InputLogic {
+        public override void WorkInput() {
+
+        }
+
+        public override void Instance_UI() {
+            base.Instance_UI();
+            GameObject prefab = DataManager.Instance.LoadAssetSync<GameObject>(Settings.aimPrefabName);
+            GameObject obj = GameObject.Instantiate(prefab);
+            obj.transform.SetParent(_gameData.mainCanvas.transform);
+            obj.GetComponent<RectTransform>().localPosition = Vector3.zero;
+            obj.transform.localScale = Vector3.one;
+        }
+    }
 }

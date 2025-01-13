@@ -8,11 +8,15 @@ using System;
 using System.Runtime.CompilerServices;
 namespace N.Game
 {
+
+    /// <summary>
+    /// 인게임 관리 제어 (메인 로직)
+    /// </summary>
     public class PlayMainLogic : MonoBehaviour
     {
         private InGameData _gameData;
         private CameraLogic _cameraLogic;
-        private List<InputLogic> _inputlogic_list = new List<InputLogic>();
+        private List<InputLogic> _inputLogic_list = new List<InputLogic>();
         private CombatLogic _combatLogic;
         //초기화
         void Awake() {
@@ -34,6 +38,11 @@ namespace N.Game
 #endif
 
             InstanceCharacter();
+
+            // UI 생성
+            foreach (var inputLogic in _inputLogic_list) {
+                inputLogic.Instance_UI();
+            }
         }
 
         private void OnDestroy() {
@@ -50,7 +59,7 @@ namespace N.Game
         public void SetInput<T>() where T : InputLogic {
             T inputLogic = InstanceComponentObject<T>();
             inputLogic.Init(_gameData);
-            _inputlogic_list.Add(inputLogic);
+            _inputLogic_list.Add(inputLogic);
         }
 
         public void SetCombat<T>() where T : CombatLogic {
@@ -83,8 +92,8 @@ namespace N.Game
 
         void Update() {
             // Input Modules 제어
-            for(int i =0;i< _inputlogic_list.Count; i++) {
-                _inputlogic_list[i].WorkInput();
+            foreach (var inputLogic in _inputLogic_list) {
+                inputLogic.WorkInput();
             }
             _combatLogic?.WorkCombat();
         }
