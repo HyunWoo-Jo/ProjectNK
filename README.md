@@ -15,6 +15,38 @@
 
 ### 네트워크 연동
 
+### UI
+
+#### Mvp 패턴 기반 UI 설계
+<img width="641" alt="image" src="https://github.com/user-attachments/assets/f33853ad-5a23-4488-a869-60716452852e" />
+
+```c#
+/// model_UI.cs
+public class Model_UI : IModel_UI {
+    public Model_UI() {}
+}
+/// presenter_UI.cs
+public class Presenter_UI<Model> : IPresenter_UI where Model : IModel_UI, new()
+{
+    protected Model _model;
+    protected IView_UI _view;
+    public IPresenter_UI Init(IView_UI view) {
+        _model = new Model();
+        _view = view;
+        return this;
+    }
+}
+/// view_UI.cs
+public class View_UI<Presenter, Model> : MonoBehaviour, IView_UI where Presenter : IPresenter_UI, new() where Model : IModel_UI
+{
+    protected Presenter _presenter;
+    public View_UI() {
+        _presenter = new Presenter();
+        _presenter.Init(this);
+    }
+}
+```
+
 ### 테스트 코드
 
 
