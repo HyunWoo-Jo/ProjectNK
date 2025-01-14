@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace N.UI
 {
-    public class Presenter_UI<Model, View> : IPresenter_UI where Model : IModel_UI, new() where View : IView_UI
+    public abstract class Presenter_UI<Model, View> : IPresenter_UI where Model : IModel_UI, new() where View : IView_UI
     {
         protected Model _model;
         protected View _view;

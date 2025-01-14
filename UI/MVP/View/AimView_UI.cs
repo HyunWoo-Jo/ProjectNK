@@ -7,8 +7,13 @@ namespace N.UI
 
     }
 
-    public class AimView_UI : View_UI<AimPresenter_UI,AimModel_UI>
+    public class AimView_UI : View_UI<AimPresenter_UI,AimModel_UI> ,IAimView_UI
     {
+        protected override void CreatePresenter() {
+            _presenter = new AimPresenter_UI();
+            _presenter.Init(this);
+        }
+
         private void Awake() {
             AddPosition(Vector2.one);
         }
@@ -21,5 +26,6 @@ namespace N.UI
             Debug.Log(1);
         }
 
+        
     }
 }
