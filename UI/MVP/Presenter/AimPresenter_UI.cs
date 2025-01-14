@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace N.UI
 {
-    public class AimPresenter_UI : Presenter_UI<AimModel_UI>
+    public class AimPresenter_UI : Presenter_UI<AimModel_UI, IAimView_UI>
     {
         internal void Move(Vector2 position) {
             _model.position = position;
