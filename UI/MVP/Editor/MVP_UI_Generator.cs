@@ -40,6 +40,9 @@ using UnityEngine;
 namespace N.UI {{
     public class {_mvpName}Model_UI : Model_UI {{
         // Your logic here
+        #region internal
+
+        #endregion
     }}
 }}
 ";
@@ -48,10 +51,16 @@ namespace N.UI {{
 using UnityEngine;
 ////////////////////////////////////////////////////////////////////////////////////
 // Auto Generated Code
+#if UNITY_EDITOR
+[assembly: InternalsVisibleTo(""N.Test"")]
+#endif
 namespace N.UI {{
 
-    public class {_mvpName}Presenter_UI : Presenter_UI<{_mvpName}Model_UI, {_mvpName}View_UI> {{
+    public class {_mvpName}Presenter_UI : Presenter_UI<{_mvpName}Model_UI, I{_mvpName}View_UI> {{
         // Your logic here
+        #region internal
+
+        #endregion
     }}
 }}
 ";
@@ -59,6 +68,9 @@ namespace N.UI {{
 using UnityEngine;
 ////////////////////////////////////////////////////////////////////////////////////
 // Auto Generated Code
+#if UNITY_EDITOR
+[assembly: InternalsVisibleTo(""N.Test"")]
+#endif
 namespace N.UI
 {{
     public interface I{_mvpName}View_UI : IView_UI {{

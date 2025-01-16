@@ -5,5 +5,17 @@ using UnityEngine;
 namespace N.UI {
     public class AimModel_UI : Model_UI {
         // Your logic here
+        #region internal
+
+        internal float Bottom { get; set; }
+        internal float Top { get; set; }
+        internal float Left { get; set; }
+        internal float Right { get; set; }
+
+        internal Vector2 Position { get; set; }
+        internal Vector2 ScreenSize { get; set;}
+
+        internal Vector2 Direction { get; set; }
+        #endregion
     }
 }
