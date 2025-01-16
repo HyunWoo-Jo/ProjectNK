@@ -1,12 +1,10 @@
-using UnityEngine;
 
-namespace N.UI
-{
-    public class AimPresenter_UI : Presenter_UI<AimModel_UI, IAimView_UI>
-    {
-        internal void Move(Vector2 position) {
-            _model.position = position;
-            _view.UpdateUI();
-        }
+using UnityEngine;
+////////////////////////////////////////////////////////////////////////////////////
+// Auto Generated Code
+namespace N.UI {
+
+    public class AimPresenter_UI : Presenter_UI<AimModel_UI, AimView_UI> {
+        // Your logic here
     }
 }
