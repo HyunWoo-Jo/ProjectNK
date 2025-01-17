@@ -8,13 +8,17 @@ namespace N.Game
     /// <summary>
     /// 메인 로직 셋팅을 넘겨주는 역할을 진행
     /// </summary>
-    public class MainLogicManager : Singleton<MainLogicManager>
-    {
+    public class MainLogicManager : Singleton<MainLogicManager> {
         public CameraLogicClassName _cameraLogicClassName = CameraLogicClassName.StandardGameCameraLogic;
-        public List<InputLogicClassName> _inputLogicClassName_list = new List<InputLogicClassName> { InputLogicClassName.InputScreenLimitLogic, InputLogicClassName.InputCombatAimLogic };
-        public List<CharacterStats> character_list = new();
+        public CombatLogicClassName _combatLogicClassName = CombatLogicClassName.StandardCombatLogic;
+        public List<InputLogicClassName> _inputLogicClassName_list = new List<InputLogicClassName> { InputLogicClassName.InputCombatAimLogic };
+        public List<string> characterName_list = new List<string> { "Lux", "Nami", "Nunu", "Ryze" };
+        public PlayState playState;
 
-
+        protected override void Awake() {
+            base.Awake();
+            Application.targetFrameRate = Settings.targetFrame;
+        }
         /// <summary>
         /// 함수명,클래스명으로 함수 호출
         /// </summary>
@@ -36,6 +40,8 @@ namespace N.Game
             foreach(var inputClassName in _inputLogicClassName_list) {
                 InvokeGenericMethod(mainLogic, "SetInput", inputClassName.ToString());
             }
+
+            InvokeGenericMethod(mainLogic, "SetCombat", _combatLogicClassName.ToString());
         }
 
 

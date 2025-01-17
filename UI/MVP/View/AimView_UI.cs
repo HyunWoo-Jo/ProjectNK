@@ -1,6 +1,8 @@
 
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 ////////////////////////////////////////////////////////////////////////////////////
 // Auto Generated Code
 #if UNITY_EDITOR
@@ -11,12 +13,21 @@ namespace N.UI
     public interface IAimView_UI : IView_UI {
         // Your logic here
        internal void ChangeAimPos(Vector2 pos);
+       internal void UpdateAmmoUI(int maxAmmo, int curAmmo);
     }
 
     public class AimView_UI : View_UI<AimPresenter_UI,AimModel_UI> ,IAimView_UI
     {
         [SerializeField] private RectTransform _rectTransform;
 
+        [SerializeField] private TMP_Text _ammoCountText;
+       
+        [SerializeField] private Color _countBgEmptyColor;
+        [SerializeField] private Color _countBgGageZeroColor;
+        [SerializeField] private Color _countBgGageOneColor;
+        [SerializeField] private Image _countBgImage;
+
+        [SerializeField] private Image _gageImage;
         protected override void CreatePresenter() {
             _presenter = new AimPresenter_UI();
             _presenter.Init(this);  
@@ -25,8 +36,24 @@ namespace N.UI
         // Your logic here
         #region public
 
-        public void ChangePosition(Vector2 pos) {
+        public void AddPosition(Vector2 pos) {
             _presenter.ChagneAddPosition(pos);
+        }
+        public void SetScreenSize(Vector2 screenSize) {
+            _presenter.SetScreenSize(screenSize);
+        }
+        public Vector2 GetPosition() {
+            return _presenter.Position;
+        }
+        public Vector2 ScreenPosition() {
+            return _presenter.ScreenPosition();
+        }
+        public void SetAmmo(int count) {
+            _presenter.SetAmmo(count);
+        }
+
+        public void ReloadAmmo(int maxAmmo, int loadAmmo) {
+            _presenter.SetAmmo(maxAmmo, loadAmmo);
         }
 
         #endregion
@@ -34,6 +61,22 @@ namespace N.UI
         #region internal
         void IAimView_UI.ChangeAimPos(Vector2 pos) { 
             _rectTransform.localPosition = pos;
+        }
+
+
+        void IAimView_UI.UpdateAmmoUI(int maxAmmo, int curAmmo) {
+            _ammoCountText.text = curAmmo.ToString().PadLeft(3,'0');
+            float ration = curAmmo / maxAmmo;
+
+            _gageImage.fillAmount = ration;
+            Color color;
+            if (ration <= Mathf.Epsilon) {
+                color = _countBgEmptyColor;
+            } else {
+                color = Color.Lerp(_countBgGageZeroColor, _countBgGageOneColor, ration);
+            }
+            _countBgImage.color = color;
+
         }
         #endregion
     }

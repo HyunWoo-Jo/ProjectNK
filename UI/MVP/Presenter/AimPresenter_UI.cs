@@ -1,6 +1,7 @@
 
 using System;
 using System.Runtime.CompilerServices;
+using Unity.Android.Gradle.Manifest;
 using UnityEngine;
 ////////////////////////////////////////////////////////////////////////////////////
 // Auto Generated Code
@@ -43,7 +44,28 @@ namespace N.UI {
             _model.Right = xHalf - (size.x * 0.02f);
             _model.Left = -1 * (xHalf - (size.x * 0.02f));
         }
+        internal void SetAmmo(int ammoCount) {
+            _model.CurrentAmmo = ammoCount;
+            _view.UpdateAmmoUI(_model.MaxAmmo, _model.CurrentAmmo);
+        }
+        internal void SetAmmo(int maxAmmo, int ammoCount) {
+            _model.MaxAmmo = maxAmmo;
+            _model.CurrentAmmo = ammoCount;
+            _view.UpdateAmmoUI(_model.MaxAmmo, _model.CurrentAmmo);
+        }
+
+        internal Vector2 ScreenPosition() {
+            Vector3 position = Position;
+            Vector2 screenSize = ScreenSize;
+            position.x += screenSize.x * 0.5f;
+            position.y += screenSize.y * 0.5f;
+            return position;
+        }
+
+        internal int AmmoCount => _model.CurrentAmmo;
         internal Vector2 Position => _model.Position;
+
+        internal Vector2 ScreenSize => _model.ScreenSize;
         #endregion
     }
 }

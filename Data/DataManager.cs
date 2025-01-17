@@ -11,23 +11,9 @@ namespace N.Data
     public class DataManager : Singleton<DataManager> 
     {
         private CharacterData _characterData = new();
-        private List<string> key_list = new();
-
-#if UNITY_EDITOR
-        //실제 빌드 과정에서는 mainScene에서 firebase를 load하기 때문에 필요없음 Editor용 Test 코드
-        protected override void Awake() {
-            base.Awake();
-            string jsonData;
-            if (PlayerPrefs.HasKey("editor_test")) {
-               jsonData = PlayerPrefs.GetString("editor_test");       
-            } else {
-               jsonData = "{{\"Lux\":{{\"ammoCapacity\":0,\"armor\":0,\"attack\":0,\"attackSpeed\":0,\"characterName\":\"\",\"curHp\":0,\"hp\":0,\"modelName\":\"\",\"potraitName\":\"\",\"skilDmg\":0,\"weaponType\":\"\"}},\"Nami\":{{\"ammoCapacity\":0,\"armor\":0,\"attack\":0,\"attackSpeed\":0,\"characterName\":\"\",\"curHp\":0,\"hp\":0,\"modelName\":\"\",\"potraitName\":\"\",\"skilDmg\":0,\"weaponType\":\"\"}},\"Nunu\":{{\"ammoCapacity\":0,\"armor\":0,\"attack\":0,\"attackSpeed\":0,\"characterName\":\"\",\"curHp\":0,\"hp\":0,\"modelName\":\"\",\"potraitName\":\"\",\"skilDmg\":0,\"weaponType\":\"\"}},\"Ryze\":{{\"ammoCapacity\":0,\"armor\":0,\"attack\":0,\"attackSpeed\":0,\"characterName\":\"\",\"curHp\":0,\"hp\":0,\"modelName\":\"\",\"potraitName\":\"\",\"skilDmg\":0,\"weaponType\":\"\"}";
-            }
-            _characterData.characterData_dic = JsonConvert.DeserializeObject<Dictionary<string, CharacterStats>>(jsonData);
-        }
-
-#endif
-
+        private List<string> _key_list = new();
+        private bool _isAble = false;
+        public bool IsAble { get { return _isAble; } }
 
         private void Start() {
             LoadCharacterData();
@@ -37,19 +23,27 @@ namespace N.Data
             // Firebase Character 정보를 Dictionary로 구성
             FirebaseManager.Instance.ReadData(FirebasePath.CharacterData, jsonData => {
                 _characterData.characterData_dic = JsonConvert.DeserializeObject<Dictionary<string, CharacterStats>>(jsonData);
-
-#if UNITY_EDITOR 
-                //실제 빌드 과정에서는 mainScene에서 firebase를 load하기 때문에 필요없음 Editor용 Test 코드
-                PlayerPrefs.SetString("editor_test", jsonData);
-#endif
-
+                _isAble = true;
             });
         }
 
-        public CharacterStats GetCharacterStats(string name) => _characterData.characterData_dic[name];
+        /// <summary>
+        /// user Character 정보가 있으면 추가해서 가지고오고 아니면 CharacterData를 가지고옴
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public CharacterStats GetCharacterStats(string name) {
+            CharacterStats characterStats;
+            if (_characterData.userCharacterAddStas_dic.TryGetValue(name, out CharacterStats userStats)) {
+                characterStats = _characterData.characterData_dic[name] + userStats;
+            } else {
+                characterStats = _characterData.characterData_dic[name];
+            }
+            return characterStats;
+        }
 
-        #region Addressable
-        public T LoadAssetSync<T>(string key) {
+            #region Addressable
+            public T LoadAssetSync<T>(string key) {
             var handle = Addressables.LoadAssetAsync<T>(key);
             handle.WaitForCompletion();
             return handle.Result;
@@ -60,7 +54,7 @@ namespace N.Data
         }
 
         public void ReleaseAssetAll() {
-            foreach (var key in key_list) {
+            foreach (var key in _key_list) {
                 Addressables.Release(key);
             }
         }

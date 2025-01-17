@@ -16,6 +16,9 @@ namespace N.UI {
         internal Vector2 ScreenSize { get; set;}
 
         internal Vector2 Direction { get; set; }
+
+        internal int MaxAmmo { get; set; }
+        internal int CurrentAmmo { get; set; }
         #endregion
     }
 }

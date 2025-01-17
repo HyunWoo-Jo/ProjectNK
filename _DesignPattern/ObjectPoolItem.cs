@@ -2,19 +2,18 @@ using UnityEngine;
 
 namespace N.DesignPattern
 {
-    public class ObjectPoolItem<T> : MonoBehaviour where T: MonoBehaviour
+    public class ObjectPoolItem : MonoBehaviour
     {
-        private ObjectPool<T> _owner;
-        private T _t;
-
-        public ObjectPoolItem<T> Init(ObjectPool<T> owner, T t) {
+        private IObjectPool _owner;
+        private int _index;
+        public ObjectPoolItem Init(IObjectPool owner, int index) {
             _owner = owner;
-            _t = t;
+            _index = index;
             return this;
         }
 
         public void Repay() {
-            _owner.RepayItem(_t);
+            _owner.RepayItem(this.gameObject, _index);
         }
     }
 }

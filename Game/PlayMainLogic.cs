@@ -18,26 +18,23 @@ namespace N.Game
         private CameraLogic _cameraLogic;
         private List<InputLogic> _inputLogic_list = new List<InputLogic>();
         private CombatLogic _combatLogic;
+
+        private List<Character> _fieldCharacter_list = new List<Character>();
         //초기화
         void Awake() {
             _gameData = GetComponent<InGameData>();
 
             MainLogicManager.Instance.SendModules(this);
-            _gameData.fieldCharacter_list = MainLogicManager.Instance.character_list;
-
+            _gameData.playState = MainLogicManager.Instance.playState;
+            
+            List<string> characterName = MainLogicManager.Instance.characterName_list;
             _cameraLogic.ChangeSlot(1);
 
-#if UNITY_EDITOR
-            // 실제 빌드시 mainScene에서 초기화 과정을 거치고 오기 때문에 필요없는 코드
-            string[] names = { "Lux","Nami","Nunu","Ryze"};
-            if(_gameData.fieldCharacter_list.Count == 0) {
-                foreach (var name in names) {
-                   _gameData.fieldCharacter_list.Add(DataManager.Instance.GetCharacterStats(name));
-                }
-            }
-#endif
+            // 캐릭터 모델링 생성 및 초기화
+            InstanceCharacter(MainLogicManager.Instance.characterName_list);
 
-            InstanceCharacter();
+            // 전투 초기화
+            _combatLogic?.InitData();
 
             // UI 생성
             foreach (var inputLogic in _inputLogic_list) {
@@ -47,6 +44,19 @@ namespace N.Game
 
         private void OnDestroy() {
             DataManager.Instance.ReleaseAssetAll();
+        }
+        void Update() {
+            // Input Modules 제어
+            foreach (var inputLogic in _inputLogic_list) {
+                inputLogic.WorkInput();
+            }
+            _combatLogic?.WorkCombat();
+        }
+
+        private void LateUpdate() {
+            // Camera Module 제어
+            _cameraLogic?.WorkCamera();
+            //
         }
 
         #region Set modules 
@@ -63,7 +73,8 @@ namespace N.Game
         }
 
         public void SetCombat<T>() where T : CombatLogic {
-            T combatLogic = InstanceComponentObject<T>();
+            _combatLogic = this.gameObject.AddComponent<T>();
+            _combatLogic.Init(_gameData);
         }
         ////////////////////////
 
@@ -77,31 +88,31 @@ namespace N.Game
         #endregion
 
         #region Instance
-        public void InstanceCharacter() {
+        /// <summary>
+        /// 저장된 데이터를 읽어와 캐릭터 오브젝트를 생성 및 초기화
+        /// </summary>
+        public void InstanceCharacter(List<string> characterName_list) {
             int index = 0;
             Vector3 offset = new Vector3(0, 0, -0.04f);
-            foreach(var characterData in _gameData.fieldCharacter_list) {
-                GameObject prefab = DataManager.Instance.LoadAssetSync<GameObject>(characterData.modelName);
+            foreach(var characterName in characterName_list) {
+                CharacterStats characterStats = DataManager.Instance.GetCharacterStats(characterName);
+                GameObject prefab = DataManager.Instance.LoadAssetSync<GameObject>(characterStats.modelName);
                 GameObject obj = Instantiate(prefab);
-                obj.transform.position = _gameData.wall_list[index++].position + offset; 
+                obj.transform.position = _gameData.wall_list[index++].position + offset;
+                _gameData.characterObj_list.Add(obj);
+
+                Character character = obj.GetComponent<Character>();
+                character.Init(_gameData, obj);
+                character.SetStats(characterStats);
+                
+                _fieldCharacter_list.Add(character);
+
             }
         }
 
         #endregion
 
 
-        void Update() {
-            // Input Modules 제어
-            foreach (var inputLogic in _inputLogic_list) {
-                inputLogic.WorkInput();
-            }
-            _combatLogic?.WorkCombat();
-        }
-
-        private void LateUpdate() {
-            // Camera Module 제어
-            _cameraLogic?.WorkCamera();
-            //
-        }
+        
     }
 }

@@ -18,6 +18,10 @@ namespace N.UI
             void IAimView_UI.ChangeAimPos(Vector2 pos) {
                 this.pos = pos;
             }
+
+            void IAimView_UI.UpdateAmmoUI(int maxAmmo, int curAmmo) {
+                
+            }
         }
         [Test]
         public void AimTest() {

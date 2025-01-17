@@ -11,6 +11,7 @@ namespace N.Network
         CharacterData,
 
     }
+    [DefaultExecutionOrder(-1000)]
     public class FirebaseManager : Singleton<FirebaseManager>
     {
         private DatabaseReference _databaseReference;

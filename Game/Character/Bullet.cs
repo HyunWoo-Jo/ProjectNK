@@ -2,20 +2,29 @@ using UnityEngine;
 
 namespace N.Game
 {
+    public enum Owner {
+        Player,
+        Enemy,
+    }
+
     public class Bullet : MonoBehaviour
     {
-        private float _moveSpeed;
-        private Vector3 _targetPos;
-       
-        internal void SetTarget(Vector3 targetPos, float speed) {
-            _moveSpeed = speed;
+        private Owner owner;
+        [SerializeField] private float _moveSpeed;
+        [SerializeField] private Vector3 _targetPos;
+        private float _damage;
+        internal void SetOwner(Owner owner) {
+            this.owner = owner;
+        }
+        internal void SetTarget(Vector3 targetPos, float damage) {
             _targetPos = targetPos;
-            this.transform.LookAt(targetPos);
+            _damage = damage;
         }
 
         void Update()
         {
             //Move
+            this.transform.LookAt(_targetPos);
             transform.position += transform.forward * _moveSpeed * Time.deltaTime;
         }
     }

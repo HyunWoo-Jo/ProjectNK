@@ -28,6 +28,7 @@ namespace N.Game {
         /// <param name="index"></param>
         public void ChangeSlot(int index) {
            _gameData.cameraTracePos = _gameData.wall_list[index].position;
+           _gameData.currentCharacterIndex = index;
         }
     }
 

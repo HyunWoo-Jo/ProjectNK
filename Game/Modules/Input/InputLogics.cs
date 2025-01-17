@@ -1,10 +1,10 @@
 using UnityEngine;
 using N.Data;
-
+using N.UI;
+using System;
 namespace N.Game
 {
     public enum InputLogicClassName {
-        InputScreenLimitLogic,
         InputCombatAimLogic,
     }
 
@@ -25,23 +25,30 @@ namespace N.Game
         public virtual void Instance_UI() { }
     }
 
-    public class InputScreenLimitLogic : InputLogic {
-
+    public class InputCombatAimLogic : InputLogic {
         public override void WorkInput() {
             if (Input.GetMouseButton(0)) {
                 Vector3 mouseDirection = Input.mousePositionDelta;
+                // limit velocity
+                float limitVelocity = 3f;
+                if(mouseDirection.magnitude > limitVelocity) {
+                    mouseDirection.Normalize();
+                    mouseDirection *= limitVelocity;
+                }
 
-                Vector2 newPos = _gameData.cameraPivotTr.position + (mouseDirection * Settings.CursorSpeed * Time.deltaTime);
-                newPos.x = Mathf.Clamp(newPos.x, -_gameData.limitPos.x, _gameData.limitPos.x);
-                newPos.y = Mathf.Clamp(newPos.y, -_gameData.limitPos.y, _gameData.limitPos.y);
-                _gameData.cameraPivotTr.position = newPos;
+                // Debug.Log(mouseDirection.magnitude);
+                // Aim UI Move
+                _gameData.aimView.AddPosition(mouseDirection * Time.deltaTime * Settings.CursorSpeed);
+                Vector2 aimPos = _gameData.aimView.GetPosition();
+
+                // Screen Limit
+                Vector2 cameraPos;
+                cameraPos.x = aimPos.x * Settings.ViewSpeed;
+                cameraPos.y = aimPos.y * Settings.ViewSpeed * 0.3f;
+                cameraPos.x = Mathf.Clamp(cameraPos.x, -_gameData.limitPos.x, _gameData.limitPos.x);
+                cameraPos.y = Mathf.Clamp(cameraPos.y, -_gameData.limitPos.y, _gameData.limitPos.y);
+                _gameData.cameraPivotTr.position = cameraPos;
             }
-        }
-    }
-
-    public class InputCombatAimLogic : InputLogic {
-        public override void WorkInput() {
-
         }
 
         public override void Instance_UI() {
@@ -51,6 +58,9 @@ namespace N.Game
             obj.transform.SetParent(_gameData.mainCanvas.transform);
             obj.GetComponent<RectTransform>().localPosition = Vector3.zero;
             obj.transform.localScale = Vector3.one;
+
+            _gameData.aimView = obj.GetComponent<AimView_UI>();
+            _gameData.aimView.SetScreenSize(new Vector2(Screen.width, Screen.height));
         }
     }
 }

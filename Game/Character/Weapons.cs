@@ -1,15 +1,36 @@
+using N.DesignPattern;
 using UnityEngine;
 
 namespace N.Game
 {
     public class Weapon
     {
-        private int _ammo;
+        private ObjectPool<Bullet> _bulletPool;
+        private int _maxAmmo;
         private int _curAmmo;
         private float _reloadTime;
         private float _curloadTime;
         private float _rpm;
-        
+        private float _attackTime;
+
+        internal int MaxAmmo { get { return _maxAmmo; } }
+        internal int CurAmmo { get { return _curAmmo; } }
+
+        internal float ReloadTime { get { return _reloadTime; } }
+        internal float CurloadTime {  get { return _curloadTime; } }
+
+        internal void InitWeapon(GameObject bulletObj, int ammo, int curAmmo, float reloadTime, float attackSpeed) {
+            if(_bulletPool != null) {
+                _bulletPool.Dipose();
+                _bulletPool = null;
+            }
+            _bulletPool = ObjectPool<Bullet>.Instance(bulletObj, 20);
+            _maxAmmo = ammo;
+            _curAmmo = curAmmo;
+            _reloadTime = reloadTime;
+            _rpm = 1 / attackSpeed ; // atack speed -> rpm
+        }
+
         /// <summary>
         /// 재장전 비율
         /// </summary>
@@ -37,13 +58,27 @@ namespace N.Game
         /// 즉시 장전
         /// </summary>
         internal void Reload() {
-            _curAmmo = _ammo;
+            _curAmmo = _maxAmmo;
         }
         /// <summary>
         /// 총 발사
         /// </summary>
-        internal void Shot() {
-
+        internal bool Shot(Vector3 startPos, Vector3 targetPos, float damage ) {
+            if (_curAmmo > 0) {
+                _attackTime += Time.deltaTime;
+                if (_attackTime >= _rpm) {
+                    _attackTime -= _rpm;
+                    
+                    Bullet bullet = _bulletPool.BorrowItem();
+                    bullet.SetOwner(Owner.Player);
+                    bullet.SetTarget(targetPos, damage);
+                    bullet.transform.position = startPos;
+                    bullet.gameObject.SetActive(true);
+                    --_curAmmo;
+                    return true;
+                }
+            }
+            return false;
         }
     }
 
