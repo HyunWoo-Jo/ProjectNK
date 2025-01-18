@@ -36,6 +36,7 @@ namespace N.Data
 
         [Header("UI")]
         public AimView_UI aimView;
+        public Reloading_UI reloadingUI;
 
         [Header("Character")]
         public List<GameObject> characterObj_list = new();

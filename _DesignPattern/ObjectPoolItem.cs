@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace N.DesignPattern
@@ -6,9 +7,11 @@ namespace N.DesignPattern
     {
         private IObjectPool _owner;
         private int _index;
+
         public ObjectPoolItem Init(IObjectPool owner, int index) {
             _owner = owner;
             _index = index;
+
             return this;
         }
 

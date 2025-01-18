@@ -48,11 +48,14 @@ namespace N.Game
         /// <summary>
         /// 설정한 장전 시간이 되면 장전
         /// </summary>
-        internal void Reloading() {
+        /// <returns> 장전 불가능 -1 | 가능 _curloadTime / _reloadTime </returns>
+        internal float Reloading() {
+            if (_curAmmo >= _maxAmmo) return -1f;
             _curloadTime += Time.deltaTime;
             if(_reloadTime < _curloadTime) {
                 Reload();
             }
+            return _curloadTime / _reloadTime;
         }
         /// <summary>
         /// 즉시 장전
@@ -71,8 +74,9 @@ namespace N.Game
                     
                     Bullet bullet = _bulletPool.BorrowItem();
                     bullet.SetOwner(Owner.Player);
-                    bullet.SetTarget(targetPos, damage);
                     bullet.transform.position = startPos;
+                    bullet.SetTarget(targetPos, damage);
+                    
                     bullet.gameObject.SetActive(true);
                     --_curAmmo;
                     return true;

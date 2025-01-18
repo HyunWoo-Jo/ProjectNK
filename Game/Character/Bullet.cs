@@ -19,12 +19,12 @@ namespace N.Game
         internal void SetTarget(Vector3 targetPos, float damage) {
             _targetPos = targetPos;
             _damage = damage;
+            this.transform.LookAt(_targetPos);
         }
 
         void Update()
         {
             //Move
-            this.transform.LookAt(_targetPos);
             transform.position += transform.forward * _moveSpeed * Time.deltaTime;
         }
     }

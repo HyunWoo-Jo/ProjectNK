@@ -44,20 +44,30 @@ namespace N.Game
                 
                 Vector2 screenPosition = _gameData.aimView.ScreenPosition();
                 Ray ray = Camera.main.ScreenPointToRay(screenPosition);
-                if (Physics.Raycast(ray, out var hit,1000f, 1 << 6)) {
+                if (Physics.Raycast(ray, out var hit, 1000f, 1 << 6)) {
                     if (_weapon.Shot(_model.transform.position, hit.point, _stats.attack)) {
                         // UI 업데이트
                         _gameData.aimView.SetAmmo(_weapon.CurAmmo);
                     }
                 }
             } else if (_state.Equals(CharacterState.Sitting) || _state.Equals(CharacterState.Hide)) {
-                _weapon.Reloading();
+               float amount = _weapon.Reloading();   
+               if(amount >= 1) {
+                    _gameData.reloadingUI.gameObject.SetActive(false);
+                    _gameData.aimView.SetAmmo(_weapon.CurAmmo);
+                }else if(amount < 0) {
+                    _gameData.reloadingUI.gameObject.SetActive(false);
+                } else {
+                    _gameData.reloadingUI.gameObject.SetActive(true);
+                    _gameData.reloadingUI.UpdateFill(amount);
+                }
             } else if (_state.Equals(CharacterState.AI)) {
                 //_ai.Work();
             }
         }
         internal void ChangeState(CharacterState state) {
             _state = state;
+            _weapon?.ResetReloadTime();
         }
         internal int GetAmmo => _weapon.CurAmmo;
         internal int GetMaxAmmo => _weapon.MaxAmmo;

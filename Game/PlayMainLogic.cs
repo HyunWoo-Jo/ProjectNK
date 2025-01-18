@@ -6,6 +6,7 @@ using N.DesignPattern;
 using N.Data;
 using System;
 using System.Runtime.CompilerServices;
+using N.UI;
 namespace N.Game
 {
 
@@ -27,11 +28,25 @@ namespace N.Game
             MainLogicManager.Instance.SendModules(this);
             _gameData.playState = MainLogicManager.Instance.playState;
             
-            List<string> characterName = MainLogicManager.Instance.characterName_list;
+            List<string> characterName_list = MainLogicManager.Instance.characterName_list;
             _cameraLogic.ChangeSlot(1);
 
-            // 캐릭터 모델링 생성 및 초기화
-            InstanceCharacter(MainLogicManager.Instance.characterName_list);
+            // 저장된 데이터를 읽어와 캐릭터 오브젝트를 생성 및 초기화
+            int index = 0;
+            Vector3 offset = new Vector3(0, 0, -0.04f);
+            foreach (var characterName in characterName_list) {
+                CharacterStats characterStats = DataManager.Instance.GetCharacterStats(characterName);
+                GameObject prefab = DataManager.Instance.LoadAssetSync<GameObject>(characterStats.modelName);
+                GameObject obj = Instantiate(prefab);
+                obj.transform.position = _gameData.wall_list[index++].position + offset;
+                _gameData.characterObj_list.Add(obj);
+
+                Character character = obj.GetComponent<Character>();
+                character.Init(_gameData, obj);
+                character.SetStats(characterStats);
+
+                _fieldCharacter_list.Add(character);
+            }
 
             // 전투 초기화
             _combatLogic?.InitData();
@@ -40,6 +55,12 @@ namespace N.Game
             foreach (var inputLogic in _inputLogic_list) {
                 inputLogic.Instance_UI();
             }
+            // reloading ui 생성 및 초기화
+            GameObject reloaduiPrefab = DataManager.Instance.LoadAssetSync<GameObject>("Reload_UI.prefab");
+            _gameData.reloadingUI = GameObject.Instantiate(reloaduiPrefab).GetComponent<Reloading_UI>();
+            _gameData.reloadingUI.transform.SetParent(_gameData.mainCanvas.transform);
+            _gameData.reloadingUI.UpdateFill(0);
+            _gameData.reloadingUI.gameObject.SetActive(false);
         }
 
         private void OnDestroy() {
@@ -87,30 +108,6 @@ namespace N.Game
         }
         #endregion
 
-        #region Instance
-        /// <summary>
-        /// 저장된 데이터를 읽어와 캐릭터 오브젝트를 생성 및 초기화
-        /// </summary>
-        public void InstanceCharacter(List<string> characterName_list) {
-            int index = 0;
-            Vector3 offset = new Vector3(0, 0, -0.04f);
-            foreach(var characterName in characterName_list) {
-                CharacterStats characterStats = DataManager.Instance.GetCharacterStats(characterName);
-                GameObject prefab = DataManager.Instance.LoadAssetSync<GameObject>(characterStats.modelName);
-                GameObject obj = Instantiate(prefab);
-                obj.transform.position = _gameData.wall_list[index++].position + offset;
-                _gameData.characterObj_list.Add(obj);
-
-                Character character = obj.GetComponent<Character>();
-                character.Init(_gameData, obj);
-                character.SetStats(characterStats);
-                
-                _fieldCharacter_list.Add(character);
-
-            }
-        }
-
-        #endregion
 
 
         
