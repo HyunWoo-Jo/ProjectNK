@@ -11,6 +11,5 @@ namespace N.UI
             CreatePresenter();
         }
         protected abstract void CreatePresenter();
-        public virtual void UpdateUI() { }
     }
 }

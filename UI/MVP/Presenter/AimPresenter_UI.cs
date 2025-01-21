@@ -44,6 +44,7 @@ namespace N.UI {
             _model.Right = xHalf - (size.x * 0.02f);
             _model.Left = -1 * (xHalf - (size.x * 0.02f));
         }
+        
         internal void SetAmmo(int ammoCount) {
             _model.CurrentAmmo = ammoCount;
             _view.UpdateAmmoUI(_model.MaxAmmo, _model.CurrentAmmo);

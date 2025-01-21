@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using NUnit.Framework;
 ////////////////////////////////////////////////////////////////////////////////////
 // Auto Generated Code
 #if UNITY_EDITOR
@@ -32,7 +33,17 @@ namespace N.UI
             _presenter = new AimPresenter_UI();
             _presenter.Init(this);  
         }
-        
+
+        private void Awake() {
+            // Assertion
+#if UNITY_EDITOR
+            Assert.IsNotNull(_rectTransform);
+            Assert.IsNotNull(_ammoCountText);
+            Assert.IsNotNull(_countBgImage);
+            Assert.IsNotNull(_gageImage);
+#endif
+        }
+
         // Your logic here
         #region public
 
@@ -66,11 +77,10 @@ namespace N.UI
 
         void IAimView_UI.UpdateAmmoUI(int maxAmmo, int curAmmo) {
             _ammoCountText.text = curAmmo.ToString().PadLeft(3,'0');
-            float ration = curAmmo / maxAmmo;
-
+            float ration = (float)curAmmo / (float)maxAmmo;
             _gageImage.fillAmount = ration;
             Color color;
-            if (ration <= Mathf.Epsilon) {
+            if (ration <= 0.2f) {
                 color = _countBgEmptyColor;
             } else {
                 color = Color.Lerp(_countBgGageZeroColor, _countBgGageOneColor, ration);

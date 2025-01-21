@@ -42,9 +42,7 @@ namespace N.Game
                 _gameData.characterObj_list.Add(obj);
 
                 Character character = obj.GetComponent<Character>();
-                character.Init(_gameData, obj);
-                character.SetStats(characterStats);
-
+                character.Init(_gameData, obj, characterStats, CharacterWeaponCreateSetting.Null);
                 _fieldCharacter_list.Add(character);
             }
 

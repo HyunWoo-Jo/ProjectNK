@@ -35,6 +35,7 @@ namespace N.UI {
 
             _modelContext = $@"
 using UnityEngine;
+using System.Runtime.CompilerServices;
 ////////////////////////////////////////////////////////////////////////////////////
 // Auto Generated Code
 namespace N.UI {{
@@ -107,6 +108,7 @@ namespace N.UI
             File.WriteAllText(presenterPath, _presenterContext);
 
             AssetDatabase.Refresh();
+            Close();
 
         }
 
