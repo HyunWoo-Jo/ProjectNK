@@ -4,7 +4,9 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "N.UI"
+        "N.UI",
+        "N.DesignPattern",
+        "N.Data"
     ],
     "includePlatforms": [
         "Editor"

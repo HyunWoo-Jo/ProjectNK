@@ -3,13 +3,16 @@ using NUnit.Framework;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using N.UI;
+using System.Collections.Generic;
+using UnityEngine.EventSystems;
+using N.Data;
+using N.DesignPattern;
 namespace N.Test
 {
 
     [TestFixture]
-    public class UI_Test
+    public class UI_Aim_Test
     {
-        #region Aim UI MVP 
         private class AimUITest : IAimView_UI {
             public AimPresenter_UI Presenter { get; private set; }
             public Vector2 Position { get; private set; } = Vector2.zero;
@@ -87,6 +90,111 @@ namespace N.Test
             aimUITest.Presenter.ChagneAddPosition(new Vector2(0, 500));
             TestUtils.AssertWithDebug(aimUITest.Position.y <= 290, "화면 상단 제한을 초과했습니다. y : " + aimUITest.Position.x);
         }
-        #endregion
+
+    }
+    [TestFixture]
+    public class UI_SeleteBottomPortrait_Test {
+        private DataManager _dataManager;
+        [SetUp]
+        public void Init() {
+            GameObject dataManagerObj = new();
+            _dataManager = dataManagerObj.AddComponent<DataManager>();
+         
+        }
+        [TearDown]
+        public void Dispose() {
+            GameObject.DestroyImmediate(_dataManager.gameObject);
+        }
+        private class SelecteBottomPortraitTest : ISelecteBottomPortraitView_UI {
+            public SelecteBottomPortraitPresenter_UI Presenter { get; private set; }
+            public List<string> AmmoTexts { get; private set; }
+            public List<float> HpRatios { get; private set; }
+            public List<float> ShieldRatios { get; private set; }
+            public List<Sprite> PortraitSprites { get; private set; }
+            public List<EventTrigger.Entry> ButtonHandlers { get; private set; }
+
+            public SelecteBottomPortraitTest() {
+                Presenter = new SelecteBottomPortraitPresenter_UI();
+                Presenter.Init(this);
+                AmmoTexts = new List<string>();
+                HpRatios = new List<float>();
+                ShieldRatios = new List<float>();
+                PortraitSprites = new List<Sprite>();
+                ButtonHandlers = new List<EventTrigger.Entry>();
+            }
+
+            void ISelecteBottomPortraitView_UI.UpdateAmmoText(int index, string text) {
+                if (AmmoTexts.Count <= index) {
+                    AmmoTexts.Add(text);
+                } else {
+                    AmmoTexts[index] = text;
+                }
+            }
+
+            void ISelecteBottomPortraitView_UI.UpdateHp(int index, float amount) {
+                if (HpRatios.Count <= index) {
+                    HpRatios.Add(amount);
+                } else {
+                    HpRatios[index] = amount;
+                }
+            }
+
+            void ISelecteBottomPortraitView_UI.UpdateShield(int index, float amount) {
+                if (ShieldRatios.Count <= index) {
+                    ShieldRatios.Add(amount);
+                } else {
+                    ShieldRatios[index] = amount;
+                }
+            }
+
+            void ISelecteBottomPortraitView_UI.UpdatePortrait(int index, Sprite portraitSprite) {
+                if (PortraitSprites.Count <= index) {
+                    PortraitSprites.Add(portraitSprite);
+                } else {
+                    PortraitSprites[index] = portraitSprite;
+                }
+            }
+
+            void ISelecteBottomPortraitView_UI.AddButtonHandler(int index, EventTrigger.Entry entry) {
+                if (ButtonHandlers.Count <= index) {
+                    ButtonHandlers.Add(entry);
+                } else {
+                    ButtonHandlers[index] = entry;
+                }
+            }
+        }
+
+        [Test]
+        public void SelecteBottomPortraitPresenterTest() {
+            SelecteBottomPortraitTest testView = new();
+            int count = 4;
+            float canvasWidth = 1440f;
+            // slot 오브젝트 생성 및 할당
+            var slotDataList = new List<PortraitSlot_UI_Data>();
+            var slotPrefab = _dataManager.LoadAssetSync<GameObject>("Slot_Potrait.prefab");
+            TestUtils.AssertWithDebug(slotPrefab != null, "prefab load 오류");
+            for (int i = 0; i < count; i++) {
+                GameObject slotObj = GameObject.Instantiate(slotPrefab);
+                slotDataList.Add(slotObj.GetComponent<PortraitSlot_UI_Data>());
+            }
+
+            // 슬롯 위치 및 핸들러 초기화
+            testView.Presenter.ButtonInit(count, canvasWidth, slotDataList, index => { });
+
+            // 슬롯 데이터 테스트
+            TestUtils.AssertWithDebug(testView.ButtonHandlers.Count == count, $"핸들러 개수 불일치: {testView.ButtonHandlers.Count}");
+            TestUtils.AssertWithDebug(slotDataList[0].transform.localPosition.x == -504f, "슬롯 위치 초기화 오류");
+            TestUtils.AssertWithDebug(slotDataList[3].transform.localPosition.x == 504f, "슬롯 위치 초기화 오류");
+
+            // 업데이트 로직 테스트
+            testView.Presenter.UpdateHp(0, 100, 50);
+            TestUtils.AssertWithDebug(testView.HpRatios[0] == 0.5f, $"HP 업데이트 오류: {testView.HpRatios[0]}");
+
+            testView.Presenter.UpdateAmmoText(0, 100, 75);
+            TestUtils.AssertWithDebug(testView.AmmoTexts[0] == "75/100", $"탄약 UI 업데이트 오류: {testView.AmmoTexts[0]}");
+
+            testView.Presenter.UpdateShield(0, 200, 50);
+            TestUtils.AssertWithDebug(testView.ShieldRatios[0] == 0.25f, $"쉴드 업데이트 오류: {testView.ShieldRatios[0]}");
+        }
     }
 }

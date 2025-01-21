@@ -14,7 +14,7 @@ namespace N.Game
         public List<InputLogicClassName> _inputLogicClassName_list = new List<InputLogicClassName> { InputLogicClassName.InputCombatAimLogic };
         public List<string> characterName_list = new List<string> { "Lux", "Nami", "Nunu", "Ryze" };
         public PlayState playState;
-
+        public PlayMainLogic curPlayMainLogic;
         protected override void Awake() {
             base.Awake();
             Application.targetFrameRate = Settings.targetFrame;

@@ -24,12 +24,12 @@ namespace N.Game
         //초기화
         void Awake() {
             _gameData = GetComponent<InGameData>();
-
+            MainLogicManager.Instance.curPlayMainLogic = this;
             MainLogicManager.Instance.SendModules(this);
             _gameData.playState = MainLogicManager.Instance.playState;
             
             List<string> characterName_list = MainLogicManager.Instance.characterName_list;
-            _cameraLogic.ChangeSlot(1);
+            ChangeSlot(1);
 
             // 저장된 데이터를 읽어와 캐릭터 오브젝트를 생성 및 초기화
             int index = 0;
@@ -53,6 +53,7 @@ namespace N.Game
             foreach (var inputLogic in _inputLogic_list) {
                 inputLogic.Instance_UI();
             }
+
             // reloading ui 생성 및 초기화
             GameObject reloaduiPrefab = DataManager.Instance.LoadAssetSync<GameObject>("Reload_UI.prefab");
             _gameData.reloadingUI = GameObject.Instantiate(reloaduiPrefab).GetComponent<Reloading_UI>();
@@ -62,6 +63,7 @@ namespace N.Game
         }
 
         private void OnDestroy() {
+            MainLogicManager.Instance.curPlayMainLogic = null;
             DataManager.Instance.ReleaseAssetAll();
         }
         void Update() {
@@ -77,6 +79,20 @@ namespace N.Game
             _cameraLogic?.WorkCamera();
             //
         }
+
+        #region public 
+        /// <summary>
+        /// Slot이 변경될때 호출 하는 함수
+        /// </summary>
+        /// <param name="index"></param>
+        public void ChangeSlot(int index) {
+            _cameraLogic.ChangeSlot(index);
+        }
+        public void Hide() {
+
+        }
+
+        #endregion
 
         #region Set modules 
         // MainLogicManager.cs 에서 invoke를 통해 컨트롤 
