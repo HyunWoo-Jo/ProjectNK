@@ -22,8 +22,6 @@ namespace N.Data
         public static float CursorSpeed { 
             get { return _cursorSpeed; } 
         }
-
-        public static string aimPrefabName = "StandardAim_UI.prefab";
         #endregion
 
         #region Game

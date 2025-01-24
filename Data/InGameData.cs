@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using N.UI;
 
 namespace N.Data
 {
@@ -31,13 +30,7 @@ namespace N.Data
 
         [Header("Input")]
         public Vector2 limitPos;
-
-        
-
-        [Header("UI")]
-        public AimView_UI aimView;
-        public Reloading_UI reloadingUI;
-        public SelecteBottomPortraitView_UI selecteBottomPortraitView;
+        public Vector2 screenPosition;
 
         [Header("Character")]
         public List<GameObject> characterObj_list = new();

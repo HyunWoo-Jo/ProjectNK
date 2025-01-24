@@ -50,6 +50,7 @@ namespace N.UI {{
 
              _presenterContext = $@"
 using UnityEngine;
+using System.Runtime.CompilerServices;
 ////////////////////////////////////////////////////////////////////////////////////
 // Auto Generated Code
 #if UNITY_EDITOR
@@ -67,6 +68,7 @@ namespace N.UI {{
 ";
             _viewContext = $@"
 using UnityEngine;
+using System.Runtime.CompilerServices;
 ////////////////////////////////////////////////////////////////////////////////////
 // Auto Generated Code
 #if UNITY_EDITOR

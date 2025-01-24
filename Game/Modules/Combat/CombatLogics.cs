@@ -13,8 +13,12 @@ namespace N.Game
     public abstract class CombatLogic : MonoBehaviour
     {
         protected InGameData _gameData;
+        protected int _curCharacterIndex = -1;
         public abstract void WorkCombat();
         public abstract void InitData();
+        public void ChangeSlot(int index) {
+            _curCharacterIndex = index;
+        }
         public void Init(InGameData data) {
             _gameData = data;
         }
@@ -22,7 +26,6 @@ namespace N.Game
 
     public class StandardCombatLogic : CombatLogic {
         private List<Character> _character_list = new();
-        private int _curCharacterIndex = -1;
         public override void InitData() {
             foreach(var characterObj in _gameData.characterObj_list) {
                 Character character = characterObj.GetComponent<Character>();
@@ -30,29 +33,25 @@ namespace N.Game
                 _character_list.Add(character);
             }
         }
-
         public override void WorkCombat() {
-            if(_curCharacterIndex != _gameData.currentCharacterIndex) {
+       
+            Character character = _character_list[_curCharacterIndex];
+            if (_curCharacterIndex != _gameData.currentCharacterIndex) {
                 _curCharacterIndex = _gameData.currentCharacterIndex;
                 for(int i =0;i< _character_list.Count; i++) {
                     if (i == _curCharacterIndex) continue;
                     CharacterState state = _gameData.playState == PlayState.Hide ? CharacterState.Hide : CharacterState.AI;
                     _character_list[i].ChangeState(state);
-                }
-                // 캐릭터가 변경되면 ui 업데이트
-                Character character = _character_list[_curCharacterIndex];
-                _gameData.aimView.ReloadAmmo(character.GetMaxAmmo, character.GetAmmo);
+                }       
             }
             if (Input.GetMouseButtonDown(0)) {
-                Character character = _character_list[_curCharacterIndex];
                 character.ChangeState(CharacterState.Standing);
             }
             if (Input.GetMouseButtonUp(0)) {
-                Character character = _character_list[_curCharacterIndex];
                 character.ChangeState(CharacterState.Sitting);
             }
-            foreach (Character character in _character_list) {
-                character.Work();
+            foreach (Character charac in _character_list) {
+                charac.Work();
             }
         }
 

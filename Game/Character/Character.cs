@@ -20,17 +20,30 @@ namespace N.Game
     {
         private CharacterState _state;
         private CharacterStats _stats;
+        public float CurHp => _stats.curHp;
+        public float MaxHp => _stats.hp;
+        
         private CharacterAI _ai;
         private Weapon _weapon;
 
         private GameObject _model;
         private Sprite _portrait;
         private InGameData _gameData;
-        internal void Init(InGameData gameData, GameObject model, CharacterStats stats, CharacterWeaponCreateSetting settings) {
+
+        private int _fieldIndex;
+        public int FieldIndex => _fieldIndex;
+
+        private Action<Weapon> _reloadingAction;
+        private Action<int> _shootAction;
+        private Action<CharacterState, int> _changeStateAction;
+        private Action<Character> _updateCharacterAction;
+
+        internal void Init(InGameData gameData, GameObject model, int fieldIndex, CharacterStats stats, CharacterWeaponCreateSetting settings) {
             _gameData = gameData;
             _model = model;
             SetStats(stats);
             ChangeState(CharacterState.AI);
+            _fieldIndex = fieldIndex;
             switch (settings) {
                 case CharacterWeaponCreateSetting.Standard:
                 CreateWeapon();
@@ -53,32 +66,33 @@ namespace N.Game
                 _weapon = weapon;
             }
         }
-
         internal void Work() {
+            if (_weapon == null) { return; }
             if (_state.Equals(CharacterState.Standing)) {
                 if (_weapon.CurAmmo > 0) {
-                    Vector2 screenPosition = _gameData.aimView.ScreenPosition();
+                    Vector2 screenPosition = _gameData.screenPosition;
                     Ray ray = Camera.main.ScreenPointToRay(screenPosition);
                     if (Physics.Raycast(ray, out var hit, 1000f, 1 << 6)) {
-                        if (_weapon.Shot(_model.transform.position, hit.point, _stats.attack)) {
-                            // UI 업데이트
-                            _gameData.aimView.SetAmmo(_weapon.CurAmmo);
+                        if (_weapon.Shot(_model.transform.position, hit.point, _stats.attack)) { 
+                            // 발사 성공 시 UI 업데이트
+                            _shootAction?.Invoke(_weapon.CurAmmo);
                         }
                     }
-                } else {
+                } else { // 총알이 없으면 자동 장전
                     UpdateReloading();
                 }
-            } else if (_state.Equals(CharacterState.Sitting) || _state.Equals(CharacterState.Hide)) {
+            } else if (_state.Equals(CharacterState.Sitting) || _state.Equals(CharacterState.Hide)) {    
                 UpdateReloading();
             } else if (_state.Equals(CharacterState.AI)) {
                 _ai?.Work();
             }
+            _updateCharacterAction?.Invoke(this);
         }
         internal void ChangeState(CharacterState state) {
             _state = state;
             if (_weapon?.CurAmmo != 0) {
                 _weapon?.ResetReloadTime();
-                _gameData.reloadingUI?.gameObject.SetActive(false);
+                _changeStateAction?.Invoke(state, _weapon.CurAmmo);
             }
         }
         internal int GetAmmo => _weapon.CurAmmo;
@@ -88,17 +102,23 @@ namespace N.Game
         /// 장전과 UI 업데이트
         /// </summary>
         private void UpdateReloading() {
-            float amount = _weapon.Reloading();
-            //UI Update
-            if (amount >= 1) {
-                _gameData.reloadingUI.gameObject.SetActive(false);
-                _gameData.aimView.SetAmmo(_weapon.CurAmmo);
-            } else if (amount < 0) {
-                _gameData.reloadingUI.gameObject.SetActive(false);
-            } else {
-                _gameData.reloadingUI.gameObject.SetActive(true);
-                _gameData.reloadingUI.UpdateFill(amount);
-            }
+            _weapon.Reloading();
+            // 장전 event 
+            _reloadingAction?.Invoke(_weapon);
+        }
+
+        public void AddReloadingEventHandler(Action<Weapon> action) {
+            _reloadingAction += action;
+        }
+
+        public void AddShootEventHandler(Action<int> action) {
+            _shootAction += action;
+        }
+        public void AddChangeStateEventHandler(Action<CharacterState, int> action) {
+            _changeStateAction += action;
+        }
+        public void AddUpdateCharacterDataHandler(Action<Character> action) {
+            _updateCharacterAction += action;
         }
     }
 }

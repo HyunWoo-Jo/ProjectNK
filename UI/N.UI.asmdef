@@ -2,7 +2,9 @@
     "name": "N.UI",
     "rootNamespace": "N.UI",
     "references": [
-        "GUID:6055be8ebefd69e48b49212b09b47b2f"
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:04c9817a4003f184a8973aaa9eb3aa1c",
+        "GUID:e2f3680e28f9b44489893672b35e7a7a"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

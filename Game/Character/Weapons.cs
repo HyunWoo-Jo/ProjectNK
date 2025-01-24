@@ -49,13 +49,13 @@ namespace N.Game
         /// 설정한 장전 시간이 되면 장전
         /// </summary>
         /// <returns> 장전 불가능 -1 | 가능 _curloadTime / _reloadTime </returns>
-        internal float Reloading() {
-            if (_curAmmo >= _maxAmmo) return -1f;
+        internal void Reloading() {
+            if (_curAmmo >= _maxAmmo) return;
             _curloadTime += Time.deltaTime;
             if(_reloadTime < _curloadTime) {
                 Reload();
             }
-            return _curloadTime / _reloadTime;
+            return;
         }
         /// <summary>
         /// 즉시 장전
