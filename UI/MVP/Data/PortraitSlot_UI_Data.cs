@@ -4,6 +4,7 @@ using TMPro;
 using NUnit.Framework;
 using UnityEngine.EventSystems;
 using System;
+using Unity.Android.Gradle.Manifest;
 namespace N.UI
 {
     public class PortraitSlot_UI_Data : MonoBehaviour
@@ -12,7 +13,9 @@ namespace N.UI
         [SerializeField] private TextMeshProUGUI _ammo_text;
         [SerializeField] private Image _shield_img;
         [SerializeField] private Image _hp_img;
+        [SerializeField] private Image _reloading_img;
         [SerializeField] private EventTrigger _eventTrigger;
+        
         private void Awake() {
 
 #if UNITY_EDITOR
@@ -21,13 +24,24 @@ namespace N.UI
             Assert.IsNotNull(_ammo_text, "PortraitSlot_UI");
             Assert.IsNotNull(_shield_img, "PortraitSlot_UI");
             Assert.IsNotNull(_hp_img, "PortraitSlot_UI");
+            Assert.IsNotNull(_reloading_img, "PortraitSlot_UI");
             Assert.IsNotNull(_eventTrigger, "PortraitSlot_UI");
+           
 #endif
         }
         internal void SetPortraitImage(Sprite sprite) => _portrait_img.sprite = sprite;
         internal void SetAmmoText(string ammoText) => _ammo_text.text = ammoText;
         internal void SetShieldFillAmount(float amount) => _shield_img.fillAmount = amount;
         internal void SetHpFillAmount(float amount) => _hp_img.fillAmount = amount;
+        internal void SetReloadingFillAmount(float amount) => _reloading_img.fillAmount = amount;
+        internal void SetActiveReloading(bool isActive) {
+            _reloading_img.gameObject.SetActive(isActive);
+            _ammo_text.gameObject.SetActive(!isActive);
+        }
+
+        internal RectTransform GetPortraitRectTransform() => _portrait_img.rectTransform;
         internal void AddButtonHandler(EventTrigger.Entry eventTriggerEntry) => _eventTrigger.triggers.Add(eventTriggerEntry);
+
+
     }
 }

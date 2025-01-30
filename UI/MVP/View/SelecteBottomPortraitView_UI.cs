@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine.EventSystems;
 using System;
+using Unity.Android.Gradle.Manifest;
+using DG.Tweening;
 ////////////////////////////////////////////////////////////////////////////////////
 // Auto Generated Code
 #if UNITY_EDITOR
@@ -19,7 +21,9 @@ namespace N.UI
         internal void UpdateShield(int index, float amount);
         internal void UpdatePortrait(int index, Sprite portraitSpite);
         internal void AddButtonHandler(int index, EventTrigger.Entry entry);
-
+        internal void UpdatePortraitAnimation(int index, bool isUp);
+        internal void UpdateReloadingActive(int index, bool isActive);
+        internal void UpdateReloadingAmount(int index, float amount);
     }
 
     public class SelecteBottomPortraitView_UI : View_UI<SelecteBottomPortraitPresenter_UI,SelecteBottomPortraitModel_UI> ,ISelecteBottomPortraitView_UI
@@ -43,8 +47,8 @@ namespace N.UI
         // Your logic here
         #region public
 
-        public void ButtonInit(int count, float fixCanvasWidth, Action<int> SlotChangeAction) {
-            _presenter.ButtonInit(count, fixCanvasWidth, _portraitUiData_list, SlotChangeAction);
+        public void ButtonInit(int count, float fixCanvasWidth, Action<int> SlotChangeAction, Action<bool> enterExitAction) {
+            _presenter.ButtonInit(count, fixCanvasWidth, _portraitUiData_list, SlotChangeAction, enterExitAction);
         }
 
         public void SetAmmo(int index, int maxAmmo, int curAmmo) {
@@ -58,6 +62,20 @@ namespace N.UI
         }
         public void SetPortrait(int index, Sprite portraitSpite) {
             _presenter.UpdatePortrait(index, portraitSpite);
+        }
+        /// <summary>
+        /// 초상화 버튼 클릭시 동작
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="isUp"></param>
+        public void OnPortraitClick(int index, bool isUp) {
+           _presenter.UpdatePortaitAnimation(index, isUp);
+        }
+        public void SetReloadingActive(int index, bool isActive) {
+            _presenter.UpdateReloadingActive(index, isActive);
+        }
+        public void SetReloading(int index, float amount) {
+            _presenter.UpdateReloadingAmount(index, amount);
         }
 
         #endregion
@@ -81,6 +99,22 @@ namespace N.UI
 
         void ISelecteBottomPortraitView_UI.AddButtonHandler(int index, EventTrigger.Entry entry) {
             _portraitUiData_list[index].AddButtonHandler(entry);
+        }
+
+        void ISelecteBottomPortraitView_UI.UpdatePortraitAnimation(int index, bool isUp) {
+            if (isUp) {
+                _portraitUiData_list[index].GetPortraitRectTransform().DOLocalMoveY(0f, 0.2f);
+            } else {
+                _portraitUiData_list[index].GetPortraitRectTransform().DOLocalMoveY(-100f, 0.2f);
+            }
+        }
+
+        void ISelecteBottomPortraitView_UI.UpdateReloadingActive(int index, bool isActive) {
+            _portraitUiData_list[index].SetActiveReloading(isActive);
+        }
+
+        void ISelecteBottomPortraitView_UI.UpdateReloadingAmount(int index, float amount) {
+            _portraitUiData_list[index].SetReloadingFillAmount(amount);
         }
         #endregion
     }

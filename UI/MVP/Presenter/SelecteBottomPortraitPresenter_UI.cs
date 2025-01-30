@@ -15,7 +15,7 @@ namespace N.UI {
         // Your logic here
         #region internal
         // 버튼 초기화 및 할당 
-        internal void ButtonInit(int count, float canvasWidth, List<PortraitSlot_UI_Data> slotData_list, Action<int> slotChangeAction) {
+        internal void ButtonInit(int count, float canvasWidth, List<PortraitSlot_UI_Data> slotData_list, Action<int> slotChangeAction, Action<bool> enterExitAction) {
             // 버튼 간격 조절 변수 (70% 구역에서 / count 한 값)
             float width = (canvasWidth * 0.7f);
             float interval = width / (count - 1);
@@ -39,6 +39,20 @@ namespace N.UI {
                     }
                 });
                 _view.AddButtonHandler(i, entry);
+                // 버튼 Enter
+                entry = new();
+                entry.eventID = EventTriggerType.PointerEnter;
+                entry.callback.AddListener((eventData) => {
+                    enterExitAction?.Invoke(true);
+                });
+                // 버튼 Exit
+                _view.AddButtonHandler(i, entry);
+                entry = new();
+                entry.eventID = EventTriggerType.PointerExit;
+                entry.callback.AddListener((eventData) => {
+                    enterExitAction?.Invoke(false);
+                });
+                _view.AddButtonHandler(i, entry);
                 // 버튼 위치 지정
                 slotData.transform.localPosition = new Vector3(startX + (interval * i), 0, 0);
             }
@@ -55,6 +69,17 @@ namespace N.UI {
         }
         internal void UpdatePortrait(int index, Sprite portraitSprite) {
             _view.UpdatePortrait(index, portraitSprite);
+        }
+
+        internal void UpdatePortaitAnimation(int index, bool isUp) {
+            _view.UpdatePortraitAnimation(index, isUp);
+        }
+
+        internal void UpdateReloadingActive(int index, bool isActive) {
+            _view.UpdateReloadingActive(index, isActive);
+        }
+        internal void UpdateReloadingAmount(int index, float amount) {
+            _view.UpdateReloadingAmount(index, amount);
         }
         #endregion
     }

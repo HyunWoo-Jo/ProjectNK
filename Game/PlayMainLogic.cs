@@ -43,8 +43,7 @@ namespace N.Game
             _gameData.playState = MainLogicManager.Instance.playState;
             
             List<string> characterName_list = MainLogicManager.Instance.characterName_list;
-            ChangeSlot(1);
-
+           
             // 저장된 데이터를 읽어와 캐릭터 오브젝트를 생성 및 초기화
             int index = 0;
             Vector3 offset = new Vector3(0, 0, -0.04f);
@@ -69,6 +68,7 @@ namespace N.Game
             foreach (var inputLogic in _inputLogic_list) {
                 inputLogic.Instance_UI();
             }
+            ChangeSlot(1);
         }
 
         private void OnDestroy() {

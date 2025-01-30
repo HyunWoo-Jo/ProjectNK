@@ -3,6 +3,7 @@ using N.Data;
 using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine.UIElements;
+using UnityEngine.TextCore.Text;
 namespace N.Game
 {
     public enum CombatLogicClassName {
@@ -16,7 +17,7 @@ namespace N.Game
         protected int _curCharacterIndex = -1;
         public abstract void WorkCombat();
         public abstract void InitData();
-        public void ChangeSlot(int index) {
+        public virtual void ChangeSlot(int index) {
             _curCharacterIndex = index;
         }
         public void Init(InGameData data) {
@@ -44,7 +45,7 @@ namespace N.Game
                     _character_list[i].ChangeState(state);
                 }       
             }
-            if (Input.GetMouseButtonDown(0)) {
+            if (Input.GetMouseButtonDown(0) && !InputLogic.IsLockClick) {
                 character.ChangeState(CharacterState.Standing);
             }
             if (Input.GetMouseButtonUp(0)) {
@@ -54,7 +55,14 @@ namespace N.Game
                 charac.Work();
             }
         }
+        public override void ChangeSlot(int index) {
+            if (_curCharacterIndex != -1) {
+                _character_list[_curCharacterIndex].ChangeState(CharacterState.AI);
+                _character_list[index].ChangeState(CharacterState.Sitting);
+            }
+            base.ChangeSlot(index);
+        }
 
-        
+
     }
 }

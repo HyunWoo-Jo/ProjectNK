@@ -16,9 +16,6 @@ namespace N.Data
     {
         public PlayState playState;
 
-        [Header("Canvas")]
-        public Canvas mainCanvas;
-
         [Header("Camera")]
         public Transform cameraPivotTr; // 카메라가 바라보는 곳
         public Transform cameraTraceTr;

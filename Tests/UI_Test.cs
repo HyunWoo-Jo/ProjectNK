@@ -95,80 +95,110 @@ namespace N.Test
     [TestFixture]
     public class UI_SeleteBottomPortrait_Test {
         private DataManager _dataManager;
+
         [SetUp]
         public void Init() {
             GameObject dataManagerObj = new();
             _dataManager = dataManagerObj.AddComponent<DataManager>();
-         
         }
+
         [TearDown]
         public void Dispose() {
             GameObject.DestroyImmediate(_dataManager.gameObject);
         }
+
         private class SelecteBottomPortraitTest : ISelecteBottomPortraitView_UI {
             public SelecteBottomPortraitPresenter_UI Presenter { get; private set; }
-            public List<string> AmmoTexts { get; private set; }
-            public List<float> HpRatios { get; private set; }
-            public List<float> ShieldRatios { get; private set; }
-            public List<Sprite> PortraitSprites { get; private set; }
-            public List<EventTrigger.Entry> ButtonHandlers { get; private set; }
+            public List<string> _ammoText_list { get; private set; }
+            public List<float> _hpRatio_list { get; private set; }
+            public List<float> _shieldRatio_list { get; private set; }
+            public List<Sprite> _portraitSprite_list { get; private set; }
+            public List<EventTrigger.Entry> _buttonHandler_list { get; private set; }
+            public List<(bool IsActive, bool IsSelected)> _activePortraitState_list { get; private set; } // 추가
 
             public SelecteBottomPortraitTest() {
                 Presenter = new SelecteBottomPortraitPresenter_UI();
                 Presenter.Init(this);
-                AmmoTexts = new List<string>();
-                HpRatios = new List<float>();
-                ShieldRatios = new List<float>();
-                PortraitSprites = new List<Sprite>();
-                ButtonHandlers = new List<EventTrigger.Entry>();
+                _ammoText_list = new List<string>();
+                _hpRatio_list = new List<float>();
+                _shieldRatio_list = new List<float>();
+                _portraitSprite_list = new List<Sprite>();
+                _buttonHandler_list = new List<EventTrigger.Entry>();
+                _activePortraitState_list = new List<(bool IsActive, bool IsSelected)>(); // 초기화
             }
 
             void ISelecteBottomPortraitView_UI.UpdateAmmoText(int index, string text) {
-                if (AmmoTexts.Count <= index) {
-                    AmmoTexts.Add(text);
+                if (_ammoText_list.Count <= index) {
+                    _ammoText_list.Add(text);
                 } else {
-                    AmmoTexts[index] = text;
+                    _ammoText_list[index] = text;
                 }
             }
 
             void ISelecteBottomPortraitView_UI.UpdateHp(int index, float amount) {
-                if (HpRatios.Count <= index) {
-                    HpRatios.Add(amount);
+                if (_hpRatio_list.Count <= index) {
+                    _hpRatio_list.Add(amount);
                 } else {
-                    HpRatios[index] = amount;
+                    _hpRatio_list[index] = amount;
                 }
             }
 
             void ISelecteBottomPortraitView_UI.UpdateShield(int index, float amount) {
-                if (ShieldRatios.Count <= index) {
-                    ShieldRatios.Add(amount);
+                if (_shieldRatio_list.Count <= index) {
+                    _shieldRatio_list.Add(amount);
                 } else {
-                    ShieldRatios[index] = amount;
+                    _shieldRatio_list[index] = amount;
                 }
             }
 
             void ISelecteBottomPortraitView_UI.UpdatePortrait(int index, Sprite portraitSprite) {
-                if (PortraitSprites.Count <= index) {
-                    PortraitSprites.Add(portraitSprite);
+                if (_portraitSprite_list.Count <= index) {
+                    _portraitSprite_list.Add(portraitSprite);
                 } else {
-                    PortraitSprites[index] = portraitSprite;
+                    _portraitSprite_list[index] = portraitSprite;
                 }
             }
 
             void ISelecteBottomPortraitView_UI.AddButtonHandler(int index, EventTrigger.Entry entry) {
-                if (ButtonHandlers.Count <= index) {
-                    ButtonHandlers.Add(entry);
+                if (_buttonHandler_list.Count <= index) {
+                    _buttonHandler_list.Add(entry);
                 } else {
-                    ButtonHandlers[index] = entry;
+                    _buttonHandler_list[index] = entry;
                 }
             }
-        }
 
+
+            void ISelecteBottomPortraitView_UI.UpdatePortraitAnimation(int index, bool isUp) {
+                if (_activePortraitState_list.Count <= index) {
+                    _activePortraitState_list.Add((isUp, _activePortraitState_list.Count > index && _activePortraitState_list[index].IsSelected));
+                } else {
+                    _activePortraitState_list[index] = (isUp, _activePortraitState_list[index].IsSelected);
+                }
+            }
+
+            void ISelecteBottomPortraitView_UI.UpdateReloadingActive(int index, bool isActive) {
+                if (_activePortraitState_list.Count <= index) {
+                    _activePortraitState_list.Add((isActive, _activePortraitState_list.Count > index && _activePortraitState_list[index].IsSelected));
+                } else {
+                    _activePortraitState_list[index] = (isActive, _activePortraitState_list[index].IsSelected);
+                }
+            }
+
+            void ISelecteBottomPortraitView_UI.UpdateReloadingAmount(int index, float amount) {
+                if (_hpRatio_list.Count <= index) {
+                    _hpRatio_list.Add(amount);
+                } else {
+                    _hpRatio_list[index] = amount;
+                }
+            }
+
+        }
         [Test]
         public void SelecteBottomPortraitPresenterTest() {
             SelecteBottomPortraitTest testView = new();
             int count = 4;
             float canvasWidth = 1440f;
+
             // slot 오브젝트 생성 및 할당
             var slotDataList = new List<PortraitSlot_UI_Data>();
             var slotPrefab = _dataManager.LoadAssetSync<GameObject>("Slot_Potrait.prefab");
@@ -179,22 +209,31 @@ namespace N.Test
             }
 
             // 슬롯 위치 및 핸들러 초기화
-            testView.Presenter.ButtonInit(count, canvasWidth, slotDataList, index => { });
+            testView.Presenter.ButtonInit(count, canvasWidth, slotDataList, index => { }, isEnter => { });
 
             // 슬롯 데이터 테스트
-            TestUtils.AssertWithDebug(testView.ButtonHandlers.Count == count, $"핸들러 개수 불일치: {testView.ButtonHandlers.Count}");
+            TestUtils.AssertWithDebug(testView._buttonHandler_list.Count == count, $"핸들러 개수 불일치: {testView._buttonHandler_list.Count}");
             TestUtils.AssertWithDebug(slotDataList[0].transform.localPosition.x == -504f, "슬롯 위치 초기화 오류");
             TestUtils.AssertWithDebug(slotDataList[3].transform.localPosition.x == 504f, "슬롯 위치 초기화 오류");
 
             // 업데이트 로직 테스트
             testView.Presenter.UpdateHp(0, 100, 50);
-            TestUtils.AssertWithDebug(testView.HpRatios[0] == 0.5f, $"HP 업데이트 오류: {testView.HpRatios[0]}");
+            TestUtils.AssertWithDebug(testView._hpRatio_list[0] == 0.5f, $"HP 업데이트 오류: {testView._hpRatio_list[0]}");
 
             testView.Presenter.UpdateAmmoText(0, 100, 75);
-            TestUtils.AssertWithDebug(testView.AmmoTexts[0] == "75/100", $"탄약 UI 업데이트 오류: {testView.AmmoTexts[0]}");
+            TestUtils.AssertWithDebug(testView._ammoText_list[0] == "75/100", $"탄약 UI 업데이트 오류: {testView._ammoText_list[0]}");
 
             testView.Presenter.UpdateShield(0, 200, 50);
-            TestUtils.AssertWithDebug(testView.ShieldRatios[0] == 0.25f, $"쉴드 업데이트 오류: {testView.ShieldRatios[0]}");
+            TestUtils.AssertWithDebug(testView._shieldRatio_list[0] == 0.25f, $"쉴드 업데이트 오류: {testView._shieldRatio_list[0]}");
+
+
+            // 테스트: 초상화 애니메이션 및 리로드 상태 업데이트 테스트
+            testView.Presenter.UpdatePortaitAnimation(0, true);
+            testView.Presenter.UpdateReloadingActive(0, true);
+            testView.Presenter.UpdateReloadingAmount(0, 0.7f);
+            Assert.AreEqual((true, testView._activePortraitState_list[0].IsSelected), testView._activePortraitState_list[0]);
+            Assert.AreEqual(0.7f, testView._hpRatio_list[0]);
+
         }
     }
 }
