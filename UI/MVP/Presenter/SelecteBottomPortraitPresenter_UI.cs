@@ -27,7 +27,9 @@ namespace N.UI {
                     slotData.gameObject.SetActive(false);
                     continue;
                 }
+
                 // 버튼 클릭 로직 할당
+                string entryClassName = this.GetType().Name + "." + nameof(ButtonInit);
                 EventTrigger.Entry entry = new ();
                 entry.eventID = EventTriggerType.PointerDown;
                 int index = i;
@@ -38,7 +40,7 @@ namespace N.UI {
                         slotChangeAction.Invoke(index);
                     }
                 });
-                _view.AddButtonHandler(i, entry);
+                _view.AddButtonHandler(i, entry, entryClassName);
                 // 버튼 Enter
                 entry = new();
                 entry.eventID = EventTriggerType.PointerEnter;
@@ -46,13 +48,13 @@ namespace N.UI {
                     enterExitAction?.Invoke(true);
                 });
                 // 버튼 Exit
-                _view.AddButtonHandler(i, entry);
+                _view.AddButtonHandler(i, entry, entryClassName);
                 entry = new();
                 entry.eventID = EventTriggerType.PointerExit;
                 entry.callback.AddListener((eventData) => {
                     enterExitAction?.Invoke(false);
                 });
-                _view.AddButtonHandler(i, entry);
+                _view.AddButtonHandler(i, entry, entryClassName);
                 // 버튼 위치 지정
                 slotData.transform.localPosition = new Vector3(startX + (interval * i), 0, 0);
             }

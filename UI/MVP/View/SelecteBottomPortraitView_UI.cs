@@ -20,7 +20,7 @@ namespace N.UI
         internal void UpdateHp(int index, float amount);
         internal void UpdateShield(int index, float amount);
         internal void UpdatePortrait(int index, Sprite portraitSpite);
-        internal void AddButtonHandler(int index, EventTrigger.Entry entry);
+        internal void AddButtonHandler(int index, EventTrigger.Entry entry, string entryClassMethodName);
         internal void UpdatePortraitAnimation(int index, bool isUp);
         internal void UpdateReloadingActive(int index, bool isActive);
         internal void UpdateReloadingAmount(int index, float amount);
@@ -97,8 +97,8 @@ namespace N.UI
             _portraitUiData_list[index].SetPortraitImage(portraitSpite);
         }
 
-        void ISelecteBottomPortraitView_UI.AddButtonHandler(int index, EventTrigger.Entry entry) {
-            _portraitUiData_list[index].AddButtonHandler(entry);
+        void ISelecteBottomPortraitView_UI.AddButtonHandler(int index, EventTrigger.Entry entry, string entryClassMethodName) {
+            _portraitUiData_list[index].AddButtonHandler(entry, entryClassMethodName);
         }
 
         void ISelecteBottomPortraitView_UI.UpdatePortraitAnimation(int index, bool isUp) {

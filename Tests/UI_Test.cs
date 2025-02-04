@@ -159,7 +159,7 @@ namespace N.Test
                 }
             }
 
-            void ISelecteBottomPortraitView_UI.AddButtonHandler(int index, EventTrigger.Entry entry) {
+            void ISelecteBottomPortraitView_UI.AddButtonHandler(int index, EventTrigger.Entry entry, string entryClassMethodName) {
                 if (_buttonHandler_list.Count <= index) {
                     _buttonHandler_list.Add(entry);
                 } else {
@@ -191,7 +191,6 @@ namespace N.Test
                     _hpRatio_list[index] = amount;
                 }
             }
-
         }
         [Test]
         public void SelecteBottomPortraitPresenterTest() {

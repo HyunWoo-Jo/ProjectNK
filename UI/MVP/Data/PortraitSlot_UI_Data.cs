@@ -40,7 +40,7 @@ namespace N.UI
         }
 
         internal RectTransform GetPortraitRectTransform() => _portrait_img.rectTransform;
-        internal void AddButtonHandler(EventTrigger.Entry eventTriggerEntry) => _eventTrigger.triggers.Add(eventTriggerEntry);
+        internal void AddButtonHandler(EventTrigger.Entry eventTriggerEntry, string entryClassMethodName) => _eventTrigger.AddEventButton(eventTriggerEntry, entryClassMethodName);
 
 
     }
