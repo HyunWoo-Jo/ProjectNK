@@ -15,7 +15,7 @@ namespace N.Data
         public float reloadTime;
 
         public string modelName;
-        public string potraitName;
+        public string portraitName;
         public string bulletName;
   
         public static CharacterStats operator +(CharacterStats baseStats, CharacterStats add) {
@@ -31,7 +31,7 @@ namespace N.Data
             b.reloadTime = baseStats.reloadTime + add.reloadTime;
 
             b.modelName = add.modelName != "" ? add.modelName : baseStats.modelName;
-            b.potraitName = add.potraitName != "" ? add.potraitName : baseStats.potraitName;
+            b.portraitName = add.portraitName != "" ? add.portraitName : baseStats.portraitName;
             b.bulletName = add.bulletName != "" ? add.bulletName : baseStats.bulletName;
             return b;
         }

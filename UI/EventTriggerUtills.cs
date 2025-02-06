@@ -8,8 +8,8 @@ namespace N.UI
        public static void AddEventButton(this EventTrigger eventTrigger, EventTrigger.Entry entry, string entryClassMethodName) {
             eventTrigger.triggers.Add(entry);
 #if UNITY_EDITOR
-            var pointChker =  eventTrigger.gameObject.GetComponent<ButtonEntryPointChker>();
-            if(pointChker == null) pointChker = eventTrigger.gameObject.AddComponent<ButtonEntryPointChker>();
+            var pointChker =  eventTrigger.gameObject.GetComponent<EditorButtonEntryPointChker>();
+            if(pointChker == null) pointChker = eventTrigger.gameObject.AddComponent<EditorButtonEntryPointChker>();
             pointChker.AddEntry(entryClassMethodName, entry.eventID);
 #endif
         }

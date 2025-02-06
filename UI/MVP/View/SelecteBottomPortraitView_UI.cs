@@ -6,6 +6,7 @@ using NUnit.Framework;
 using UnityEngine.EventSystems;
 using System;
 using Unity.Android.Gradle.Manifest;
+using UnityEngine.UI;
 using DG.Tweening;
 ////////////////////////////////////////////////////////////////////////////////////
 // Auto Generated Code
@@ -103,10 +104,17 @@ namespace N.UI
 
         void ISelecteBottomPortraitView_UI.UpdatePortraitAnimation(int index, bool isUp) {
             if (isUp) {
+                // portrait 위로 이동
                 _portraitUiData_list[index].GetPortraitRectTransform().DOLocalMoveY(0f, 0.2f);
+                // background 이동
+                _portraitUiData_list[index].GetBackgroundImg().DOFillAmount(1.0f, 0.2f);
             } else {
-                _portraitUiData_list[index].GetPortraitRectTransform().DOLocalMoveY(-100f, 0.2f);
+                // portrait 기본 이동
+                _portraitUiData_list[index].GetPortraitRectTransform().DOLocalMoveY(-190f, 0.2f);
+                // background 기본 이동
+                _portraitUiData_list[index].GetBackgroundImg().DOFillAmount(0.68f, 0.2f);
             }
+            _portraitUiData_list[index].SetActiveTextParent(!isUp);
         }
 
         void ISelecteBottomPortraitView_UI.UpdateReloadingActive(int index, bool isActive) {

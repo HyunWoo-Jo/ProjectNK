@@ -54,6 +54,7 @@ namespace N.Game
             _curloadTime += Time.deltaTime;
             if(_reloadTime < _curloadTime) {
                 Reload();
+                ResetReloadTime();
             }
             return;
         }

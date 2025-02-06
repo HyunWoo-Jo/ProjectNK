@@ -156,11 +156,20 @@ namespace N.Game
             var playLogic = MainLogicManager.Instance.curPlayMainLogic;
             // 슬롯 변경시
             playLogic.AddChangeSlotEventHandler(UpdateSeleteBottomUI);
-            
+
+            int index = 0;
             // field에 있는 모든 캐릭터 업데이트
             foreach (var character in playLogic._fieldCharacter_list) {
                 // 캐릭터 데이터가 업데이트 될시
                 character.AddUpdateCharacterDataHandler(UpdateBottomUI);
+
+                // 초상화 업데이트
+
+                string portraitName = character.Stats.portraitName;
+                Sprite portrait = DataManager.Instance.LoadAssetSync<Sprite>(portraitName);
+                sbpView.SetPortrait(index, portrait);
+                sbpView.OnPortraitClick(index, false);
+                ++index;
             }
         }
         // ammo, hp, reloding 업데이트

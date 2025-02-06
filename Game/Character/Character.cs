@@ -21,6 +21,7 @@ namespace N.Game
         private CharacterState _state;
         public CharacterState State { get { return _state; } }
         private CharacterStats _stats;
+        public CharacterStats Stats { get { return _stats; } }
         public float CurHp => _stats.curHp;
         public float MaxHp => _stats.hp;
         

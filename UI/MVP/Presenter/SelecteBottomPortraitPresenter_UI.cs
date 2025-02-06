@@ -29,7 +29,7 @@ namespace N.UI {
                 }
 
                 // 버튼 클릭 로직 할당
-                string entryClassName = this.GetType().Name + "." + nameof(ButtonInit);
+                string entryClassName = this.GetType().Name + ".";
                 EventTrigger.Entry entry = new ();
                 entry.eventID = EventTriggerType.PointerDown;
                 int index = i;
@@ -40,23 +40,23 @@ namespace N.UI {
                         slotChangeAction.Invoke(index);
                     }
                 });
-                _view.AddButtonHandler(i, entry, entryClassName);
+                _view.AddButtonHandler(i, entry, entryClassName + nameof(slotChangeAction));
                 // 버튼 Enter
                 entry = new();
                 entry.eventID = EventTriggerType.PointerEnter;
                 entry.callback.AddListener((eventData) => {
                     enterExitAction?.Invoke(true);
                 });
+                _view.AddButtonHandler(i, entry, entryClassName + nameof(enterExitAction));
                 // 버튼 Exit
-                _view.AddButtonHandler(i, entry, entryClassName);
                 entry = new();
                 entry.eventID = EventTriggerType.PointerExit;
                 entry.callback.AddListener((eventData) => {
                     enterExitAction?.Invoke(false);
                 });
-                _view.AddButtonHandler(i, entry, entryClassName);
+                _view.AddButtonHandler(i, entry, entryClassName + nameof(enterExitAction));
                 // 버튼 위치 지정
-                slotData.transform.localPosition = new Vector3(startX + (interval * i), 0, 0);
+                slotData.transform.localPosition = new Vector3(startX + (interval * i), 100, 0);
             }
 
         }
