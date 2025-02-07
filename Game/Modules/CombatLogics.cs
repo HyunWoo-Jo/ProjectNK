@@ -11,30 +11,31 @@ namespace N.Game
 
     }
 
-    public abstract class CombatLogic : MonoBehaviour
-    {
+    public abstract class CombatLogic : MonoBehaviour, ILogic {
         protected InGameData _gameData;
         protected int _curCharacterIndex = -1;
-        public abstract void WorkCombat();
-        public abstract void InitData();
+        public abstract void Work();
+        public abstract void Instance();
         public virtual void ChangeSlot(int index) {
             _curCharacterIndex = index;
         }
         public void Init(InGameData data) {
             _gameData = data;
         }
+
+        
     }
 
     public class StandardCombatLogic : CombatLogic {
         private List<Character> _character_list = new();
-        public override void InitData() {
+        public override void Instance() {
             foreach(var characterObj in _gameData.characterObj_list) {
                 Character character = characterObj.GetComponent<Character>();
                 character.CreateWeapon();
                 _character_list.Add(character);
             }
         }
-        public override void WorkCombat() {
+        public override void Work() {
        
             Character character = _character_list[_curCharacterIndex];
             if (_curCharacterIndex != _gameData.currentCharacterIndex) {
@@ -55,6 +56,10 @@ namespace N.Game
                 charac.Work();
             }
         }
+        /// <summary>
+        /// Slot이 변경될때 호출
+        /// </summary>
+        /// <param name="index"></param>
         public override void ChangeSlot(int index) {
             if (_curCharacterIndex != -1) {
                 _character_list[_curCharacterIndex].ChangeState(CharacterState.AI);

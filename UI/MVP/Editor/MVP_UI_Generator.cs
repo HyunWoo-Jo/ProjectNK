@@ -12,7 +12,7 @@ namespace N.UI {
         private string _modelContext;
         private string _viewContext;
         private string _presenterContext;
-        [MenuItem("Generator/MVP_UI")]
+        [MenuItem("Tools/Generator/MVP_UI")]
         public static void OpenWindow() {
             var window = GetWindow<MVP_UI_Generator>("MVP_Generator");
             

@@ -12,8 +12,8 @@ namespace N.Game
         public CameraLogicClassName _cameraLogicClassName = CameraLogicClassName.StandardGameCameraLogic;
         public CombatLogicClassName _combatLogicClassName = CombatLogicClassName.StandardCombatLogic;
         public List<InputLogicClassName> _inputLogicClassName_list = new List<InputLogicClassName> { InputLogicClassName.InputCombatAimLogic };
+        public EnemyLogicClassName _enemyLogicClassName = EnemyLogicClassName.StandardEnemyLogic;
         public List<string> characterName_list = new List<string> { "Lux", "Nami", "Nunu", "Ryze" };
-        public PlayState playState;
         public PlayMainLogic curPlayMainLogic;
         protected override void Awake() {
             base.Awake();
@@ -42,6 +42,9 @@ namespace N.Game
             }
 
             InvokeGenericMethod(mainLogic, "SetCombat", _combatLogicClassName.ToString());
+            InvokeGenericMethod(mainLogic, "SetEnemy", _enemyLogicClassName.ToString());
+
+            mainLogic.SetCharacter(characterName_list);
         }
 
 

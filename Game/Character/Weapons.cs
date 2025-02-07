@@ -67,7 +67,7 @@ namespace N.Game
         /// <summary>
         /// รั น฿ป็
         /// </summary>
-        internal bool Shot(Vector3 startPos, Vector3 targetPos, float damage ) {
+        internal bool Shot(Vector3 startPos, Vector3 targetPos, float damage) {
             if (_curAmmo > 0) {
                 _attackTime += Time.deltaTime;
                 if (_attackTime >= _rpm) {

@@ -8,7 +8,7 @@ namespace N.DesignPattern
         private IObjectPool _owner;
         private int _index;
 
-        public ObjectPoolItem Init(IObjectPool owner, int index) {
+        internal ObjectPoolItem Init(IObjectPool owner, int index) {
             _owner = owner;
             _index = index;
 

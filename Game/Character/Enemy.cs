@@ -3,6 +3,7 @@ using UnityEngine;
 using N.Data;
 using NUnit.Framework;
 using UnityEngine.UI;
+using Unity.Plastic.Newtonsoft.Json.Serialization;
 namespace N.Game
 {
     [RequireComponent(typeof(Rigidbody))]
@@ -10,24 +11,30 @@ namespace N.Game
     public class Enemy : MonoBehaviour
     {
         private CharacterStats _stats;
+        public CharacterStats Stats { get { return _stats; } }
         private Weapon _weapon;
-        [SerializeField] private Canvas _canvas;
-        [SerializeField] private Image _hpFill_image;
+
+        private Action<float, float> _updateHpAction;
         private void Awake() {
-#if UNITY_EDITOR
-            Assert.IsNotNull(_canvas, "Enemy");
-            Assert.IsNotNull(_hpFill_image, "Enemy");
-#endif
+
+            Init();
         }
         public void Init() {
             _weapon = new Weapon();
-            _weapon.InitWeapon(null, _stats.ammoCapacity, _stats.ammoCapacity, _stats.reloadTime, _stats.attackSpeed);
+            //_weapon.InitWeapon(null, _stats.ammoCapacity, _stats.ammoCapacity, _stats.reloadTime, _stats.attackSpeed);
+
+            _stats.hp = 1000f;
+            _stats.curHp = 1000f;
         }
 
         public void Damage(float damage) {
             _stats.curHp -= damage;
-            _hpFill_image.fillAmount = _stats.curHp / _stats.hp;
+            _updateHpAction?.Invoke(_stats.hp, _stats.curHp);
         }
-        
+
+
+        public void AddUpdateHpHandler(Action<float, float> action) {
+            _updateHpAction += action;
+        }
     }
 }

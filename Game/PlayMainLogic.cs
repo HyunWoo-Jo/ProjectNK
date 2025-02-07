@@ -8,6 +8,7 @@ using System;
 using System.Runtime.CompilerServices;
 using N.UI;
 using NUnit.Framework;
+using Unity.Android.Gradle.Manifest;
 namespace N.Game
 {
 
@@ -18,14 +19,18 @@ namespace N.Game
     {
         // MainLogic Generate   
         private CameraLogic _cameraLogic;
-        private List<InputLogic> _inputLogic_list = new List<InputLogic>();
+        private List<InputLogic> _inputLogic_list = new();
         private CombatLogic _combatLogic;
+        private EnemyLogic _enemyLogic;
         // Game Scene
         [SerializeField] private UI_Controller _uiController;
 
         //Data
         private InGameData _gameData;
-        internal List<Character> _fieldCharacter_list = new List<Character>();
+        private List<string> _characterName_list;
+
+        internal List<Character> _fieldCharacter_list = new();
+        internal List<Enemy> _fieldEnemy_list = new();
 
         // Event
         private Action<Character> _changeSlotAction;
@@ -40,15 +45,12 @@ namespace N.Game
             _gameData = GetComponent<InGameData>();
             MainLogicManager.Instance.curPlayMainLogic = this;
             MainLogicManager.Instance.SendModules(this);
-            _gameData.playState = MainLogicManager.Instance.playState;
-            
-            List<string> characterName_list = MainLogicManager.Instance.characterName_list;
            
             // 저장된 데이터를 읽어와 캐릭터 오브젝트를 생성 및 초기화
             int index = 0;
             Vector3 offset = new Vector3(0, 0, -0.04f);
          
-            foreach (var characterName in characterName_list) {
+            foreach (var characterName in _characterName_list) {
                 CharacterStats characterStats = DataManager.Instance.GetCharacterStats(characterName);
                 GameObject prefab = DataManager.Instance.LoadAssetSync<GameObject>(characterStats.modelName);
                 GameObject obj = Instantiate(prefab);
@@ -62,31 +64,33 @@ namespace N.Game
             }
 
             // 전투 초기화
-            _combatLogic?.InitData();
+            _combatLogic?.Instance();
+            _enemyLogic?.Instance();
 
             // UI 생성
             foreach (var inputLogic in _inputLogic_list) {
-                inputLogic.Instance_UI();
+                inputLogic.Instance();
             }
             ChangeSlot(1);
         }
 
-        private void OnDestroy() {
+        private void OnDisable() {
             MainLogicManager.Instance.curPlayMainLogic = null;
             DataManager.Instance.ReleaseAssetAll();
         }
         void Update() {
             // Input Modules 제어
             foreach (var inputLogic in _inputLogic_list) {
-                inputLogic.WorkInput();
+                inputLogic.Work();
             }
             
-            _combatLogic?.WorkCombat();
+            _combatLogic?.Work();
+            _enemyLogic?.Work();
         }
 
         private void LateUpdate() {
             // Camera Module 제어
-            _cameraLogic?.WorkCamera();
+            _cameraLogic?.Work();
             //
         }
 
@@ -123,13 +127,20 @@ namespace N.Game
 
         public void SetInput<T>() where T : InputLogic {
             T inputLogic = InstanceComponentObject<T>();
-            inputLogic.Init(_gameData, _uiController);
-            _inputLogic_list.Add(inputLogic);
+            inputLogic.Init(this, _gameData, _uiController);
+            _inputLogic_list.Add(inputLogic);     
         }
 
         public void SetCombat<T>() where T : CombatLogic {
             _combatLogic = this.gameObject.AddComponent<T>();
             _combatLogic.Init(_gameData);
+        }
+        public void SetEnemy<T>() where T : EnemyLogic {
+            _enemyLogic = this.gameObject.AddComponent<T>();
+            _enemyLogic.Init(this, _gameData);
+        }
+        public void SetCharacter(List<string> characterName_list) {
+            _characterName_list = characterName_list;
         }
         ////////////////////////
 

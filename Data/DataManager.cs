@@ -6,12 +6,15 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine.AddressableAssets;
 using Cysharp.Threading.Tasks;
+using UnityEngine.ResourceManagement.AsyncOperations;
 namespace N.Data
 {
     public class DataManager : Singleton<DataManager> 
     {
         private CharacterData _characterData = new();
-        private List<string> _key_list = new();
+        private Dictionary<string, object> _data_dic = new();
+        private Dictionary<string, int> _dataCount_dic = new();
+        private Dictionary<string, AsyncOperationHandle> _handle_dic = new();
         private bool _isAble = false;
         public bool IsAble { get { return _isAble; } }
 
@@ -43,20 +46,43 @@ namespace N.Data
         }
 
             #region Addressable
-            public T LoadAssetSync<T>(string key) {
-            var handle = Addressables.LoadAssetAsync<T>(key);
-            handle.WaitForCompletion();
-            return handle.Result;
+        public T LoadAssetSync<T>(string key) where T : Object{
+            T result = null;
+            if (!_data_dic.TryGetValue(key, out object obj)) {
+                AsyncOperationHandle<T> handle = Addressables.LoadAssetAsync<T>(key);
+                handle.WaitForCompletion();
+                result = handle.Result;
+                _data_dic.Add(key, result);
+                _dataCount_dic.Add(key, 1);
+                _handle_dic.Add(key, handle);
+            }
+            if (result == null) {
+                _dataCount_dic[key]++;
+                return (T)obj;
+            } else {
+                return result;
+            }
         }
 
         public void ReleaseAsset(string key) {
-            Addressables.Release(key);
+            if(_dataCount_dic.TryGetValue(key, out int count)) {
+                _dataCount_dic[key]--;
+                if(--count <= 0 && _handle_dic.TryGetValue(key, out var handle)) {
+                    _data_dic.Remove(key);
+                    _dataCount_dic.Remove(key);
+                    _handle_dic.Remove(key);
+                    Addressables.Release(handle);
+                }
+            }
         }
 
         public void ReleaseAssetAll() {
-            foreach (var key in _key_list) {
-                Addressables.Release(key);
+            foreach (var keyValue in _handle_dic) {
+                Addressables.Release(keyValue.Value);
             }
+            _data_dic.Clear();
+            _dataCount_dic.Clear();
+            _handle_dic.Clear();
         }
         #endregion
     }

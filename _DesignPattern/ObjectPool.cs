@@ -14,6 +14,10 @@ namespace N.DesignPattern
         private Queue<T> _item_que;
         private List<T> index_T_list;
         int index = 0;
+
+        private ObjectPool() {
+        }
+
         public void Dipose() {
             _ownerObj = null;
             _itemObj = null;
