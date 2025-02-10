@@ -5,6 +5,7 @@ using System;
 using static Codice.Client.Common.Connection.AskCredentialsToUser;
 using N.DesignPattern;
 using System.Collections.Generic;
+using UnityEngine.TextCore.Text;
 namespace N.Game
 {
     public enum InputLogicClassName {
@@ -51,6 +52,7 @@ namespace N.Game
     /// </summary>
     public class InputCombatAimLogic : InputLogic {
         private AimView_UI _aimView;
+        private int _seletedIndex = -1;
         public override void Work() {
             if (!isWork) return;
 
@@ -93,15 +95,21 @@ namespace N.Game
             
         }
         private void UpdateAimUI(Character character) {
-            _aimView.SetAmmo(character.GetAmmo);
+            // 선택 유닛일 경우에만 업데이트
+            if (_seletedIndex == character.FieldIndex) {
+                _aimView.SetAmmo(character.GetAmmo);
+            }
         }
        
-        private void UpdateAmmoChange(Character chracter) {
-            _aimView.ReloadAmmo(chracter.GetMaxAmmo, chracter.GetAmmo);
+        private void UpdateAmmoChange(Character character) {
+            _seletedIndex = character.FieldIndex;
+            _aimView.ReloadAmmo(character.GetMaxAmmo, character.GetAmmo);
         }
-        private void UpdateReloading(Character chracter) {
-            Weapon weapon = chracter.Weapon;
-            _aimView.ReloadAmmo(weapon.MaxAmmo, weapon.CurAmmo);
+        private void UpdateReloading(Character character) {
+            if (_seletedIndex == character.FieldIndex) {
+                Weapon weapon = character.Weapon;
+                _aimView.ReloadAmmo(weapon.MaxAmmo, weapon.CurAmmo);
+            }
         }
        
        

@@ -9,12 +9,14 @@ namespace N.Game
     /// 메인 로직 셋팅을 넘겨주는 역할을 진행
     /// </summary>
     public class MainLogicManager : Singleton<MainLogicManager> {
+        public EnemySpawnDataList spawnDataList;
         public CameraLogicClassName _cameraLogicClassName = CameraLogicClassName.StandardGameCameraLogic;
         public CombatLogicClassName _combatLogicClassName = CombatLogicClassName.StandardCombatLogic;
         public List<InputLogicClassName> _inputLogicClassName_list = new List<InputLogicClassName> { InputLogicClassName.InputCombatAimLogic };
         public EnemyLogicClassName _enemyLogicClassName = EnemyLogicClassName.StandardEnemyLogic;
         public List<string> characterName_list = new List<string> { "Lux", "Nami", "Nunu", "Ryze" };
         public PlayMainLogic curPlayMainLogic;
+       
         protected override void Awake() {
             base.Awake();
             Application.targetFrameRate = Settings.targetFrame;

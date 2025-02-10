@@ -2,6 +2,8 @@ using UnityEngine;
 using N.Data;
 using N.DesignPattern;
 using System;
+using N.Utills;
+using Unity.Android.Gradle.Manifest;
 namespace N.Game
 {
     public enum CharacterState {
@@ -18,7 +20,7 @@ namespace N.Game
 
     public class Character : MonoBehaviour
     {
-        private CharacterState _state;
+        [ReadOnly] [SerializeField] private CharacterState _state;
         public CharacterState State { get { return _state; } }
         private CharacterStats _stats;
         public CharacterStats Stats { get { return _stats; } }
@@ -51,12 +53,14 @@ namespace N.Game
             switch (settings) {
                 case CharacterWeaponCreateSetting.Standard:
                 CreateWeapon();
+                _ai = new CharacterStandardAI(this, MainLogicManager.Instance.curPlayMainLogic);
                 break;
                 case CharacterWeaponCreateSetting.Null:
 
                 break;
             }      
         }
+        
 
         internal void SetStats(CharacterStats stats) {
             _stats = stats;
@@ -70,6 +74,10 @@ namespace N.Game
                 _weapon = weapon;
             }
         }
+        internal void CreateAI<AI>() where AI : CharacterAI {
+            _ai = (AI)Activator.CreateInstance(typeof(AI), this, MainLogicManager.Instance.curPlayMainLogic);
+        }
+
         internal void Work() {
             if (_weapon == null) { return; }
             if (_state.Equals(CharacterState.Standing)) {
@@ -77,17 +85,17 @@ namespace N.Game
                     Vector2 screenPosition = _gameData.screenPosition;
                     Ray ray = Camera.main.ScreenPointToRay(screenPosition);
                     if (Physics.Raycast(ray, out var hit, 1000f, 1 << 6)) {
-                        if (_weapon.Shot(_model.transform.position, hit.point, _stats.attack)) { 
-                            // 발사 성공 시 UI 업데이트
-                            _shootAction?.Invoke(this);
-                        }
+                        if (Shoot(hit.point)) ShootEvent();
+
                     }
                 } else { // 총알이 없으면 자동 장전
-                    UpdateReloading();
+                    Reload();
+                    ReloadingEvent();
                 }
-            } else if (_state.Equals(CharacterState.Sitting) || _state.Equals(CharacterState.Hide)) {    
-                UpdateReloading();
-            } else if (_state.Equals(CharacterState.AI)) {
+            } else if (_state.Equals(CharacterState.Sitting) || _state.Equals(CharacterState.Hide)) {
+                Reload();
+                ReloadingEvent();
+            } else if (_state.Equals(CharacterState.AI)) { 
                 _ai?.Work();
             }
             _updateCharacterAction?.Invoke(this);
@@ -96,22 +104,37 @@ namespace N.Game
             if (_state == state) return;
             _state = state;
             if (_weapon?.CurAmmo != 0) {
-                _weapon?.ResetReloadTime();
+                // 특정 상태면 reloadtime 초기화를 하지않음
+                if (!state.Equals(CharacterState.AI) || !state.Equals(CharacterState.Sitting)) {
+                    _weapon?.ResetReloadTime();
+                }
+                // event 발생 ui 업데이트 관련
                 _changeStateAction?.Invoke(this);
             }
         }
         internal int GetAmmo => _weapon.CurAmmo;
         internal int GetMaxAmmo => _weapon.MaxAmmo;
 
+        internal bool Shoot(Vector3 targetPos) {
+            return _weapon.Shot(_model.transform.position, targetPos, _stats.attack);
+        }
+        internal void ShootEvent() {
+            _shootAction?.Invoke(this);
+        }
+
         /// <summary>
-        /// 장전과 UI 업데이트
+        /// 장전
         /// </summary>
-        private void UpdateReloading() {
+        internal void Reload() {
             _weapon.Reloading();
+        }
+        /// <summary>
+        /// 장전 UI 업데이트
+        /// </summary>
+        internal void ReloadingEvent() {
             // 장전 event 
             _reloadingAction?.Invoke(this);
         }
-
         public void AddReloadingEventHandler(Action<Character> action) {
             _reloadingAction += action;
         }

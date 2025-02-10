@@ -32,12 +32,15 @@ namespace N.Game
             foreach(var characterObj in _gameData.characterObj_list) {
                 Character character = characterObj.GetComponent<Character>();
                 character.CreateWeapon();
+                character.CreateAI<CharacterStandardAI>();
                 _character_list.Add(character);
             }
         }
         public override void Work() {
        
             Character character = _character_list[_curCharacterIndex];
+
+            // Hide 상태 컨트롤
             if (_curCharacterIndex != _gameData.currentCharacterIndex) {
                 _curCharacterIndex = _gameData.currentCharacterIndex;
                 for(int i =0;i< _character_list.Count; i++) {
@@ -46,12 +49,15 @@ namespace N.Game
                     _character_list[i].ChangeState(state);
                 }       
             }
+            // 마우스 클릭
             if (Input.GetMouseButtonDown(0) && !InputLogic.IsLockClick) {
                 character.ChangeState(CharacterState.Standing);
             }
+            // 마우스 UP
             if (Input.GetMouseButtonUp(0)) {
                 character.ChangeState(CharacterState.Sitting);
             }
+            // 모든 캐릭터 Work
             foreach (Character charac in _character_list) {
                 charac.Work();
             }

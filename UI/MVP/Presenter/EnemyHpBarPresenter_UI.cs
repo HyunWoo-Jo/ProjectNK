@@ -16,7 +16,9 @@ namespace N.UI {
         }
         internal void SetPosition(Vector3 position) {
             Vector3 newPos = Camera.main.WorldToScreenPoint(position);
-            Debug.Log(newPos);
+            newPos.x -= Screen.width / 2;
+            newPos.y -= Screen.height / 2;
+            newPos.y += Screen.height / 20;
             _view.SetScreenPosition(newPos);
         }
 

@@ -71,7 +71,9 @@ namespace N.Game
             foreach (var inputLogic in _inputLogic_list) {
                 inputLogic.Instance();
             }
-            ChangeSlot(1);
+            // ΩΩ∑‘ 0º±≈√
+            ChangeSlot(0);
+            _fieldCharacter_list[0].ChangeState(CharacterState.Sitting);
         }
 
         private void OnDisable() {

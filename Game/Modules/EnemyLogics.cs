@@ -39,6 +39,8 @@ namespace N.Game
                 GameObject enemyObj = GameObject.Instantiate(enemyPrfab);
                 enemyObj.transform.position = data.spawnPosition;
                 enemyObj.transform.localScale = Vector3.one;
+                _playMainLogic._fieldEnemy_list.Add(enemyObj.GetComponent<Enemy>());
+
                 ++_spawnIndex;
             }
         }

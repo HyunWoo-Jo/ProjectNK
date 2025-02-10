@@ -37,7 +37,7 @@ namespace N.Game
         private void OnTriggerEnter(Collider other) {
             if (_owner.Equals(Owner.Player)) {
                 if (other.CompareTag("Enemy")) {
-                    other.GetComponent<Enemy>().Damage(_damage);
+                    other.GetComponent<HitArea>().Damage(_damage);
                     _item.Repay();
                     this.gameObject.SetActive(false);
                 }

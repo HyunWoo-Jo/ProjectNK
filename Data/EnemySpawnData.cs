@@ -9,6 +9,12 @@ namespace N.Data
         Dragoon,
         Arbiter
     }
+    public enum SpawnType {
+        LeftAppeared,
+        RightAppeared,
+        UpAppeared,
+        DownAppeared,
+    }
     [Serializable]
     public struct EnemySpawnData {
         public float spawnTime;

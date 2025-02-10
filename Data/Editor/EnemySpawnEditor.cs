@@ -165,7 +165,7 @@ namespace N.Data
         // Graph를 그리는 매서드
         private void DrawGraph(float yPos) {
            
-            if (_loadedStage == null || _loadedStage.spawnData_list.Count == 0)
+            if (_loadedStage == null || _loadedStage.spawnData_list == null || _loadedStage.spawnData_list.Count == 0)
                 return;
             Vector2 rect = new Vector2(800f, 300f);
             Rect graphRect = new Rect(20, yPos, rect.x, rect.y); // 그래프 그릴 영역

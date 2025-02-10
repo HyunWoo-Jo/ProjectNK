@@ -32,7 +32,13 @@ namespace N.UI
             Canvas canvas = canvasObj.GetComponent<Canvas>();
             canvas.overrideSorting = true;
             canvas.sortingOrder = order;
-
+            // anchor 초기화
+            RectTransform rt = canvasObj.GetComponent<RectTransform>();
+            rt.anchorMin = new Vector2(0, 0);
+            rt.anchorMax = new Vector2(1, 1);
+            rt.pivot = new Vector2(0.5f, 0.5f);
+            rt.offsetMin = new Vector2(0, 0);
+            rt.offsetMax = new Vector2(1, 1);
             return canvasObj;
         }
         public void RemoveParentCanvas(GameObject canvas) {
@@ -65,7 +71,15 @@ namespace N.UI
             uiObj.transform.localPosition = Vector3.zero; 
             uiObj.transform.localScale = Vector3.one;
             uiObj.gameObject.SetActive(isAtive);
+            // anchor 변경
+            RectTransform rt = uiObj.GetComponent<RectTransform>();
+            rt.anchorMin = new Vector2(0, 0);
+            rt.anchorMax = new Vector2(1, 1);
+            rt.pivot = new Vector2(0.5f, 0.5f);
+            rt.offsetMin = new Vector2(0, 0);
+            rt.offsetMax = new Vector2(1, 1);
             Canvas canvas = uiObj.GetComponent<Canvas>();
+            
             if (canvas != null) {
                 canvas.overrideSorting = true;
                 canvas.sortingOrder = order;
