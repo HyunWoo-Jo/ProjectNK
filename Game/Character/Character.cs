@@ -22,11 +22,11 @@ namespace N.Game
     {
         [ReadOnly] [SerializeField] private CharacterState _state;
         public CharacterState State { get { return _state; } }
-        private CharacterStats _stats;
+        [ReadOnly] [SerializeField] private CharacterStats _stats;
         public CharacterStats Stats { get { return _stats; } }
         public float CurHp => _stats.curHp;
         public float MaxHp => _stats.hp;
-        
+        public Vector3 targetPos;
         private CharacterAI _ai;
         private Weapon _weapon;
 
@@ -97,6 +97,9 @@ namespace N.Game
                 ReloadingEvent();
             } else if (_state.Equals(CharacterState.AI)) { 
                 _ai?.Work();
+            }
+            if(_gameData.currentCharacterIndex == FieldIndex) {
+                ReloadingEvent();
             }
             _updateCharacterAction?.Invoke(this);
         }

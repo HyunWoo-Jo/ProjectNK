@@ -14,7 +14,6 @@ namespace N.UI
         [SerializeField] private Canvas _mainCanvas;
         [SerializeField] private GameObject _parentCanvas_prefab;
         private List<GameObject> instantCanvas_list = new();
-        private Dictionary<string, object> _ui_dic = new();
         private Dictionary<string, string> _key_dic = new();
         private void Awake() {
 #if UNITY_EDITOR
@@ -52,16 +51,9 @@ namespace N.UI
             string key = GetKey(typeName);
             if (key != string.Empty) { // key가 있으면 생성 할당
                 View view = InstanceUI<View>(key, isActive, order);
-                _ui_dic.Add(typeName, view);
                 return view;
             }
             return null;
-        }
-
-        public View GetUIView<View>() where View : MonoBehaviour{
-            string typeName = typeof(View).Name;
-            return _ui_dic[typeName] as View;
-
         }
       
         private View InstanceUI<View>(string key, bool isAtive, int order) {
@@ -94,10 +86,11 @@ namespace N.UI
        
 
         private void AddKey() {
-            _key_dic.Add("AimView_UI", "StandardAim_UI.prefab");
-            _key_dic.Add("ReloadingView_UI", "Reload_UI.prefab");
-            _key_dic.Add("SelecteBottomPortraitView_UI", "SelectBottomPortrait_UI.prefab");
-            _key_dic.Add("EnemyHpBarView_UI", "EnemyHPBar_UI.prefab");
+            _key_dic.Add(typeof(AimView_UI).Name, "StandardAim_UI.prefab");
+            _key_dic.Add(typeof(ReloadingView_UI).Name, "Reload_UI.prefab");
+            _key_dic.Add(typeof(SelecteBottomPortraitView_UI).Name, "SelectBottomPortrait_UI.prefab");
+            _key_dic.Add(typeof(EnemyHpBarView_UI).Name, "EnemyHPBar_UI.prefab");
+            _key_dic.Add(typeof(AutoButtonView_UI).Name, "AutoButton_UI.prefab");
         }
 
         

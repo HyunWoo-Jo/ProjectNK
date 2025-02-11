@@ -33,6 +33,7 @@ namespace N.UI {
         internal void ChangePosition(Vector2 pos) {
             _model.Position = pos;
             _view.ChangeAimPos(pos);
+
         }
         internal void SetScreenSize(Vector2 size) {
             _model.ScreenSize = size;

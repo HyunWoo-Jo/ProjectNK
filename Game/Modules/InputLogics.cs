@@ -6,6 +6,7 @@ using static Codice.Client.Common.Connection.AskCredentialsToUser;
 using N.DesignPattern;
 using System.Collections.Generic;
 using UnityEngine.TextCore.Text;
+using System.Linq;
 namespace N.Game
 {
     public enum InputLogicClassName {
@@ -13,6 +14,7 @@ namespace N.Game
         InputBottomPortraitLogic,
         InputReloadingUILogic,
         InputEnemyHpBarLogic,
+        InputAutoButtonLogic,
     }
 
 
@@ -78,6 +80,14 @@ namespace N.Game
                 cameraPos.y = Mathf.Clamp(cameraPos.y, -_gameData.limitPos.y, _gameData.limitPos.y);
                 _gameData.cameraPivotTr.position = cameraPos;
             }
+            // AI 상태면 자동 Aim 조준 업데이트 
+            else if (_gameData.playState.Equals(PlayState.AI) && _seletedIndex != -1) {
+                // Aim 위치 업데이트
+                var character = _playMainLogic._fieldCharacter_list[_seletedIndex];
+                Vector2 screenPos = Camera.main.WorldToScreenPoint(character.targetPos);
+                screenPos -= new Vector2(Screen.width / 2, Screen.height / 2);
+                _aimView.SetPosition(screenPos);
+            }
         }
 
         public override void Instance() {
@@ -91,19 +101,22 @@ namespace N.Game
                 character.AddReloadingEventHandler(UpdateReloading);
             }
             // 캐릭터가 변경될때 AIm Ammo UI도 변경되도록 event 할당
-            _playMainLogic.AddChangeSlotEventHandler(UpdateAmmoChange);
+            _playMainLogic.AddChangeSlotEventHandler(UpdateSlotChange);
             
         }
         private void UpdateAimUI(Character character) {
             // 선택 유닛일 경우에만 업데이트
             if (_seletedIndex == character.FieldIndex) {
                 _aimView.SetAmmo(character.GetAmmo);
+                // 흔들기
+                _aimView.ShakeAim();
             }
         }
        
-        private void UpdateAmmoChange(Character character) {
+        private void UpdateSlotChange(Character character) {
+            // Ammo 상태 업데이트
             _seletedIndex = character.FieldIndex;
-            _aimView.ReloadAmmo(character.GetMaxAmmo, character.GetAmmo);
+            _aimView.ReloadAmmo(character.GetMaxAmmo, character.GetAmmo);        
         }
         private void UpdateReloading(Character character) {
             if (_seletedIndex == character.FieldIndex) {
@@ -217,35 +230,61 @@ namespace N.Game
         private Dictionary<int, EnemyHpBarView_UI> _enemy_dic = new();
         private GameObject _parentCanvasTransform;
         public override void Instance() {
+            // canvas 생성
             _parentCanvasTransform = _uiController.InstantiateParentCanvas(0);
         }
 
         public override void Work() {
-           HashSet<int> curEnemyKey_map = new(_playMainLogic._fieldEnemy_list.Count);
-           foreach(var enemy in _playMainLogic._fieldEnemy_list) {
+            HashSet<int> curEnemyKey_map = new(_playMainLogic._fieldEnemy_list.Count);
+            var currentEnemySet = new HashSet<int>(_playMainLogic._fieldEnemy_list.Select(enemy => enemy.GetInstanceID()));
+
+            // 적에 해당하는 UI를 업데이트하거나 새로 생성
+            foreach (var enemy in _playMainLogic._fieldEnemy_list) {
                 int enemyInstanceID = enemy.GetInstanceID();
-                curEnemyKey_map.Add(enemyInstanceID);
-                EnemyHpBarView_UI hpBarView;
-                // 추가 로직
-                if (!_enemy_dic.TryGetValue(enemyInstanceID, out hpBarView)) {
+
+                // 기존 UI가 없으면 새로 생성
+                if (!_enemy_dic.TryGetValue(enemyInstanceID, out var hpBarView)) {
+                    // hp ui 생성
                     hpBarView = _uiController.InstantiateUI<EnemyHpBarView_UI>(0);
                     hpBarView.transform.SetParent(_parentCanvasTransform.transform);
                     _enemy_dic.Add(enemyInstanceID, hpBarView);
-                    // enemy의 hp가 변동될때 ui를 갱신하도록 설정
-                    enemy.AddUpdateHpHandler(hpBarView.SetImageFill);       
+                    enemy.AddUpdateHpHandler(hpBarView.SetImageFill);
                 }
+
                 // 위치 갱신
                 hpBarView.SetPosition(enemy.transform.position);
-           }
-           // 없는 enemy ui 정리
-           foreach(var keyValue in _enemy_dic) {
-                if (!curEnemyKey_map.Contains(keyValue.Key)) {
-                    EnemyHpBarView_UI view = _enemy_dic[keyValue.Key];
-                    _enemy_dic.Remove(keyValue.Key);
-                    Destroy(view.gameObject);
-                }
+            }
+
+            // 존재하지 않는 enemy UI 정리
+            var except_list = _enemy_dic.Keys.Except(currentEnemySet).ToList();
+            foreach (var key in except_list) {
+                var view = _enemy_dic[key];
+                _enemy_dic.Remove(key);
+                Destroy(view.gameObject);
+            }
+        }
+    }
+    // Auto Button
+    public class InputAutoButtonLogic : InputLogic {
+        
+        public override void Instance() {
+            var autoButton = _uiController.InstantiateUI<AutoButtonView_UI>(0);
+            autoButton.InitButton(OnButtonDown, _gameData.playState.Equals(PlayState.AI) ? true : false);
+        }
+
+        public override void Work() {
+            if (_gameData.playState.Equals(PlayState.AI)) {
+                Character seletedCharacter = _playMainLogic._fieldCharacter_list[_gameData.currentCharacterIndex];
+                seletedCharacter.ChangeState(CharacterState.AI);
             }
         }
 
+        private void OnButtonDown() {
+            if (_gameData.playState.Equals(PlayState.AI)) {
+                _gameData.playState = PlayState.Play;
+            } else {
+                _gameData.playState = PlayState.AI;
+            }
+        }
     }
 }

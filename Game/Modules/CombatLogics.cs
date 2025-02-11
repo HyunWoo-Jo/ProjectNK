@@ -4,6 +4,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine.UIElements;
 using UnityEngine.TextCore.Text;
+using System.Linq;
 namespace N.Game
 {
     public enum CombatLogicClassName {
@@ -43,7 +44,7 @@ namespace N.Game
             // Hide 상태 컨트롤
             if (_curCharacterIndex != _gameData.currentCharacterIndex) {
                 _curCharacterIndex = _gameData.currentCharacterIndex;
-                for(int i =0;i< _character_list.Count; i++) {
+                for (int i =0;i< _character_list.Count; i++) {
                     if (i == _curCharacterIndex) continue;
                     CharacterState state = _gameData.playState == PlayState.Hide ? CharacterState.Hide : CharacterState.AI;
                     _character_list[i].ChangeState(state);

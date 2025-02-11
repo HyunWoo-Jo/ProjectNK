@@ -30,6 +30,7 @@ namespace N.Game
                     Vector3 targetPos = EnemyList()
                         .Select(enemy => enemy.HitPosition())
                         .MinBy(pos => (_owner.transform.position - pos).sqrMagnitude);
+                    _owner.targetPos = targetPos;
                     if (_owner.Shoot(targetPos)) _owner.ShootEvent();
                 } else {
                     _owner.Reload();

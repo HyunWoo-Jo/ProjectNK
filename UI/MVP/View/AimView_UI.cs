@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using NUnit.Framework;
+using DG.Tweening;
 ////////////////////////////////////////////////////////////////////////////////////
 // Auto Generated Code
 #if UNITY_EDITOR
@@ -50,6 +51,9 @@ namespace N.UI
         public void AddPosition(Vector2 pos) {
             _presenter.ChagneAddPosition(pos);
         }
+        public void SetPosition(Vector2 pos) {
+            _presenter.ChangePosition(pos);
+        }
         public void SetScreenSize(Vector2 screenSize) {
             _presenter.SetScreenSize(screenSize);
         }
@@ -65,6 +69,10 @@ namespace N.UI
 
         public void ReloadAmmo(int maxAmmo, int loadAmmo) {
             _presenter.SetAmmo(maxAmmo, loadAmmo);
+        }
+
+        public void ShakeAim() {
+            _rectTransform.DOShakePosition(0.02f, 10f);
         }
 
         #endregion

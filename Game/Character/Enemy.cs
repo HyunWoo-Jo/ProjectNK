@@ -5,12 +5,13 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using Unity.Plastic.Newtonsoft.Json.Serialization;
 using NUnit.Framework;
+using N.Utills;
 namespace N.Game
 {
     public class Enemy : MonoBehaviour, IHitAble {
 
         [SerializeField] private HitArea[] _hitAreas;
-        private CharacterStats _stats;
+        [ReadOnly][SerializeField] private CharacterStats _stats;
         public CharacterStats Stats { get { return _stats; } }
         private Weapon _weapon;
 
@@ -31,6 +32,12 @@ namespace N.Game
             _stats.hp = 1000f;
             _stats.curHp = 1000f;
         }
+        public void SetHp(float maxHp, float curHp) {
+            _stats.hp = maxHp;
+            _stats.curHp = curHp;
+        }
+
+        public float GetHP() => _stats.curHp;
 
         public void Damage(float damage) {
             _stats.curHp -= damage;

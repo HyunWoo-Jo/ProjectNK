@@ -1,8 +1,10 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 namespace N.Data
 {
 
+    [Serializable]
     public struct CharacterStats {
         public string characterName;
         public float attack;
