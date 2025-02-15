@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using N.Data;
 using N.DesignPattern;
+using System;
 namespace N.Test
 {
 
@@ -159,13 +160,13 @@ namespace N.Test
                 }
             }
 
-            void ISelecteBottomPortraitView_UI.AddButtonHandler(int index, EventTrigger.Entry entry, string entryClassMethodName) {
-                if (_buttonHandler_list.Count <= index) {
-                    _buttonHandler_list.Add(entry);
-                } else {
-                    _buttonHandler_list[index] = entry;
-                }
-            }
+            //void ISelecteBottomPortraitView_UI.AddButtonHandler(int index, EventTrigger.Entry entry, string entryClassMethodName) {
+            //    if (_buttonHandler_list.Count <= index) {
+            //        _buttonHandler_list.Add(entry);
+            //    } else {
+            //        _buttonHandler_list[index] = entry;
+            //    }
+            //}
 
 
             void ISelecteBottomPortraitView_UI.UpdatePortraitAnimation(int index, bool isUp) {
@@ -190,6 +191,10 @@ namespace N.Test
                 } else {
                     _hpRatio_list[index] = amount;
                 }
+            }
+
+            void ISelecteBottomPortraitView_UI.AddButtonHandler(int index, EventTriggerType type, Action action, string entryClassMethodName) {
+                throw new NotImplementedException();
             }
         }
         [Test]

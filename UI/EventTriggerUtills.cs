@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -12,6 +13,12 @@ namespace N.UI
             if(pointChker == null) pointChker = eventTrigger.gameObject.AddComponent<EditorButtonEntryPointChker>();
             pointChker.AddEntry(entryClassMethodName, entry.eventID);
 #endif
+        }
+        public static void AddEventButton(this EventTrigger eventTigger, EventTriggerType type, Action action, string entryClassMethodName) {
+            EventTrigger.Entry entry = new();
+            entry.eventID = type;
+            entry.callback.AddListener((e) => { action(); });
+            AddEventButton(eventTigger, entry, entryClassMethodName);
         }
     }
 }

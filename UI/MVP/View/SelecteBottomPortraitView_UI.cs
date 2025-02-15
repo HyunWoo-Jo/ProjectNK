@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine.EventSystems;
 using System;
-using Unity.Android.Gradle.Manifest;
 using UnityEngine.UI;
 using DG.Tweening;
 ////////////////////////////////////////////////////////////////////////////////////
@@ -21,7 +20,7 @@ namespace N.UI
         internal void UpdateHp(int index, float amount);
         internal void UpdateShield(int index, float amount);
         internal void UpdatePortrait(int index, Sprite portraitSpite);
-        internal void AddButtonHandler(int index, EventTrigger.Entry entry, string entryClassMethodName);
+        internal void AddButtonHandler(int index, EventTriggerType type, Action action, string entryClassMethodName);
         internal void UpdatePortraitAnimation(int index, bool isUp);
         internal void UpdateReloadingActive(int index, bool isActive);
         internal void UpdateReloadingAmount(int index, float amount);
@@ -48,8 +47,8 @@ namespace N.UI
         // Your logic here
         #region public
 
-        public void ButtonInit(int count, float fixCanvasWidth, Action<int> SlotChangeAction, Action<bool> enterExitAction) {
-            _presenter.ButtonInit(count, fixCanvasWidth, _portraitUiData_list, SlotChangeAction, enterExitAction);
+        public void ButtonInit(int count, float fixCanvasWidth, Action<int> slotChangeAction, Action<bool> enterExitAction) {
+            _presenter.ButtonInit(count, fixCanvasWidth, _portraitUiData_list, slotChangeAction, enterExitAction);
         }
 
         public void SetAmmo(int index, int maxAmmo, int curAmmo) {
@@ -98,8 +97,8 @@ namespace N.UI
             _portraitUiData_list[index].SetPortraitImage(portraitSpite);
         }
 
-        void ISelecteBottomPortraitView_UI.AddButtonHandler(int index, EventTrigger.Entry entry, string entryClassMethodName) {
-            _portraitUiData_list[index].AddButtonHandler(entry, entryClassMethodName);
+        void ISelecteBottomPortraitView_UI.AddButtonHandler(int index,EventTriggerType type, Action action, string entryClassMethodName) {
+            _portraitUiData_list[index].AddButtonHandler(type, action, entryClassMethodName);
         }
 
         void ISelecteBottomPortraitView_UI.UpdatePortraitAnimation(int index, bool isUp) {

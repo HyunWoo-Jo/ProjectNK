@@ -30,35 +30,21 @@ namespace N.UI {
 
                 // 버튼 클릭 로직 할당
                 string entryClassName = this.GetType().Name + ".";
-                EventTrigger.Entry entry = new ();
-                entry.eventID = EventTriggerType.PointerDown;
                 int index = i;
-                entry.callback.AddListener((eventData) => {
+                _view.AddButtonHandler(i,EventTriggerType.PointerDown, () => {
                     if (index == _model.IsSelectedIndex) { // 같은 버튼 두번 클릭
                     } else { // 버튼 처음 클릭
                         _model.IsSelectedIndex = index;
                         slotChangeAction.Invoke(index);
                     }
-                });
-                _view.AddButtonHandler(i, entry, entryClassName + nameof(slotChangeAction));
+                }, entryClassName + nameof(slotChangeAction));
                 // 버튼 Enter
-                entry = new();
-                entry.eventID = EventTriggerType.PointerEnter;
-                entry.callback.AddListener((eventData) => {
-                    enterExitAction?.Invoke(true);
-                });
-                _view.AddButtonHandler(i, entry, entryClassName + nameof(enterExitAction));
+                _view.AddButtonHandler(i, EventTriggerType.PointerEnter, () => { enterExitAction?.Invoke(true); } , entryClassName + nameof(enterExitAction));
                 // 버튼 Exit
-                entry = new();
-                entry.eventID = EventTriggerType.PointerExit;
-                entry.callback.AddListener((eventData) => {
-                    enterExitAction?.Invoke(false);
-                });
-                _view.AddButtonHandler(i, entry, entryClassName + nameof(enterExitAction));
+                _view.AddButtonHandler(i, EventTriggerType.PointerExit, () => { enterExitAction?.Invoke(false); }, entryClassName + nameof(enterExitAction));
                 // 버튼 위치 지정
                 slotData.transform.localPosition = new Vector3(startX + (interval * i), 100, 0);
             }
-
         }
         internal void UpdateHp(int index, float  maxHp, float curHp) {
             _view.UpdateHp(index, curHp / maxHp);

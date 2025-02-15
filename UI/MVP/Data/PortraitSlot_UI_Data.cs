@@ -4,8 +4,8 @@ using TMPro;
 using NUnit.Framework;
 using UnityEngine.EventSystems;
 using System;
-using Unity.Android.Gradle.Manifest;
 using DG.Tweening;
+
 namespace N.UI
 {
     public class PortraitSlot_UI_Data : MonoBehaviour
@@ -48,7 +48,7 @@ namespace N.UI
         internal void SetActiveTextParent(bool isActive) => _textParent.gameObject.SetActive(isActive);
 
         internal RectTransform GetPortraitRectTransform() => _portrait_img.rectTransform;
-        internal void AddButtonHandler(EventTrigger.Entry eventTriggerEntry, string entryClassMethodName) => _eventTrigger.AddEventButton(eventTriggerEntry, entryClassMethodName);
+        internal void AddButtonHandler(EventTriggerType type, Action action, string entryClassMethodName) => _eventTrigger.AddEventButton(type, action, entryClassMethodName);
 
 
     }

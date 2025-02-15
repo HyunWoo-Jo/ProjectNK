@@ -91,9 +91,10 @@ namespace N.UI
             _key_dic.Add(typeof(SelecteBottomPortraitView_UI).Name, "SelectBottomPortrait_UI.prefab");
             _key_dic.Add(typeof(EnemyHpBarView_UI).Name, "EnemyHPBar_UI.prefab");
             _key_dic.Add(typeof(AutoButtonView_UI).Name, "AutoButton_UI.prefab");
+            _key_dic.Add(typeof(InventoryView_UI).Name, "Inventory_UI.prefab");
         }
 
-        
+
 
 
     }
