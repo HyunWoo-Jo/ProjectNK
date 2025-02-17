@@ -31,6 +31,9 @@ namespace N.UI
         private void OnDisable() {
             transform.localPosition = _initLocalPosition;
         }
+        private void OnDestroy() {
+            DOTween.Kill(this.transform);
+        }
 
         private void OnAnimation() {
             switch (_type) {

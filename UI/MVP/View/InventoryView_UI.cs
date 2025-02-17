@@ -58,6 +58,14 @@ namespace N.UI
             _allButton.gameObject.SetActive(false);
             _equipButtons.SetActive(false);
         }
+       
+        private void OnDestroy() {
+            // Dotween 정리
+            DOTween.Kill(_allButton);
+            foreach(var item in _equipTypeButton_list) {
+                DOTween.Kill(item);
+            }
+        }
         private void InitButton() {
             // 버튼이 생성될때 생성 후 활성화 하는 함수
             _inventroyOpenAnimation.AddCompleteHanlder(() => {

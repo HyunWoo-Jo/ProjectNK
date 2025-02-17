@@ -20,7 +20,7 @@ namespace N.UI
             Assert.IsNotNull(_mainCanvas);
             Assert.IsNotNull(_parentCanvas_prefab);
 #endif
-            AddKey();
+            if (_key_dic.Count == 0) AddKey();
 
         }
 
@@ -44,12 +44,19 @@ namespace N.UI
             instantCanvas_list.Remove(canvas);
             Destroy(canvas);
         }
+        public void RemoveUI(string typeName, GameObject obj){
+            Destroy(obj);
+            // Key 할당
+            string key = GetKey(typeName);
+            DataManager.Instance.ReleaseAsset(key);
+        }
 
         public View InstantiateUI<View>(int order, bool isActive = true) where View : MonoBehaviour{
             string typeName = typeof(View).Name;
             // Key 할당
+            if (_key_dic.Count == 0) AddKey();
             string key = GetKey(typeName);
-            if (key != string.Empty) { // key가 있으면 생성 할당
+            if (!string.IsNullOrEmpty(key)) { // key가 있으면 생성 할당
                 View view = InstanceUI<View>(key, isActive, order);
                 return view;
             }
@@ -78,6 +85,7 @@ namespace N.UI
             }
             return uiObj.GetComponent<View>();
         }
+        
 
         private string GetKey(string typeName) {
             _key_dic.TryGetValue(typeName, out string key);
