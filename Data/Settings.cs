@@ -27,5 +27,9 @@ namespace N.Data
         #region Game
         public static int targetFrame = 120;
         #endregion
+
+        #region Scene
+        public static string nextSceneName = "MainLobbyScene";
+        #endregion
     }
 }

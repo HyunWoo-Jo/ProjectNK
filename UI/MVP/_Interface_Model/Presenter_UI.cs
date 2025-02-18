@@ -7,7 +7,7 @@ namespace N.UI
         protected Model _model;
         protected View _view;
 
-        public IPresenter_UI Init(IView_UI view) {
+        public virtual IPresenter_UI Init(IView_UI view) {
             _model = new Model();
             _view = (View)view;
             return this;

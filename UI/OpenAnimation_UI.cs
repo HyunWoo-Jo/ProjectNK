@@ -12,6 +12,7 @@ namespace N.UI
         public enum OpenAnimationType {
             Scale,
             ScaleX,
+            ScaleY,
             MoveRight,
         }
         [SerializeField] private OpenAnimationType _type;
@@ -46,6 +47,10 @@ namespace N.UI
                 case OpenAnimationType.ScaleX:
                 transform.localScale = new Vector3(0, 1, 1);
                 transform.DOScaleX(1, _time);
+                break;
+                case OpenAnimationType.ScaleY:
+                transform.localScale = new Vector3(1, 0, 1);
+                transform.DOScaleY(1, _time);
                 break;
                 case OpenAnimationType.MoveRight:
                 transform.localPosition = transform.localPosition + new Vector3(-_value, 0, 0);

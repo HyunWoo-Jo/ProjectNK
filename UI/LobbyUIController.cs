@@ -26,6 +26,8 @@ namespace N.UI
             _chepterButton.AddEventButton(EventTriggerType.PointerDown, OnChepterButton, nameof(OnChepterButton) + "." + typeName);
             _lobbyButton.AddEventButton(EventTriggerType.PointerDown, OnLobbyButton, nameof(OnLobbyButton) + "." + typeName);
             _inventoryButton.AddEventButton(EventTriggerType.PointerDown, OnInvenButton, nameof(OnInvenButton) + "." + typeName);
+
+            
         }
     
         private void OnChepterButton() {
