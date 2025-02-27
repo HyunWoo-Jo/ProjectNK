@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace N.UI
+namespace N.Utills
 {
     public static class EventTriggerUtills 
     {

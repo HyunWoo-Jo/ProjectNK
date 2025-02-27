@@ -12,7 +12,7 @@ namespace N.Network
         private FirebaseUser _user;
         
         internal string Uid {
-            get { return _user.UserId; }
+            get { return _auth.CurrentUser.UserId; }
         }
 
         /// <summary>

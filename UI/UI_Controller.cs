@@ -9,22 +9,32 @@ namespace N.UI
     /// <summary>
     /// UI 오브젝트를 생성하고 초기화 하며 저장함
     /// </summary>
-    public class UI_Controller : MonoBehaviour
+    public class UI_Controller : Singleton<UI_Controller>
     {
-        [SerializeField] private Canvas _mainCanvas;
+        private Canvas _mainCanvas;
         [SerializeField] private GameObject _parentCanvas_prefab;
         private List<GameObject> instantCanvas_list = new();
         private Dictionary<string, string> _key_dic = new();
-        private void Awake() {
+        
+        protected override void Awake() {
+            base.Awake();
 #if UNITY_EDITOR
-            Assert.IsNotNull(_mainCanvas);
             Assert.IsNotNull(_parentCanvas_prefab);
 #endif
             if (_key_dic.Count == 0) AddKey();
-
+            FindMainCanvas();
+        }
+        
+        /// <summary>
+        /// Main Canvas 검색
+        /// </summary>
+        private void FindMainCanvas() {
+            GameObject mainCanvasObj = GameObject.Find("MainCanvas");
+            _mainCanvas =  mainCanvasObj.GetComponent<Canvas>();
         }
 
         public GameObject InstantiateParentCanvas(int order) {
+            if (_mainCanvas == null) FindMainCanvas();
             GameObject canvasObj = GameObject.Instantiate(_parentCanvas_prefab);
             canvasObj.transform.SetParent(_mainCanvas.transform);
             instantCanvas_list.Add(canvasObj);
@@ -52,6 +62,7 @@ namespace N.UI
         }
 
         public View InstantiateUI<View>(int order, bool isActive = true) where View : MonoBehaviour{
+            if (_mainCanvas == null) FindMainCanvas();
             string typeName = typeof(View).Name;
             // Key 할당
             if (_key_dic.Count == 0) AddKey();

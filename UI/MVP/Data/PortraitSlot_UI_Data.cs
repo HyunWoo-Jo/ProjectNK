@@ -5,7 +5,7 @@ using NUnit.Framework;
 using UnityEngine.EventSystems;
 using System;
 using DG.Tweening;
-
+using N.Utills;
 namespace N.UI
 {
     public class PortraitSlot_UI_Data : MonoBehaviour
@@ -23,15 +23,15 @@ namespace N.UI
 
 #if UNITY_EDITOR
             // Assertion
-
-            Assert.IsNotNull(_background_img, "PortraitSlot_UI");
-            Assert.IsNotNull(_portrait_img, "PortraitSlot_UI");
-            Assert.IsNotNull(_ammo_text, "PortraitSlot_UI");
-            Assert.IsNotNull(_shield_img, "PortraitSlot_UI");
-            Assert.IsNotNull(_hp_img, "PortraitSlot_UI");
-            Assert.IsNotNull(_reloading_img, "PortraitSlot_UI");
-            Assert.IsNotNull(_eventTrigger, "PortraitSlot_UI");
-            Assert.IsNotNull(_textParent, "PortraitSlot_UI");
+            string scriptName = typeof(PortraitSlot_UI_Data).Name;
+            Assert.IsNotNull(_background_img, scriptName);
+            Assert.IsNotNull(_portrait_img, scriptName);
+            Assert.IsNotNull(_ammo_text, scriptName);
+            Assert.IsNotNull(_shield_img, scriptName);
+            Assert.IsNotNull(_hp_img, scriptName);
+            Assert.IsNotNull(_reloading_img, scriptName);
+            Assert.IsNotNull(_eventTrigger, scriptName);
+            Assert.IsNotNull(_textParent, scriptName);
 
 #endif
         }

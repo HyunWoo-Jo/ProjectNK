@@ -15,19 +15,66 @@ namespace N.Data
         private Dictionary<string, object> _data_dic = new();
         private Dictionary<string, int> _dataCount_dic = new();
         private Dictionary<string, AsyncOperationHandle> _handle_dic = new();
+        private List<Equipment> _equipment_list = new();
         private bool _isAble = false;
         public bool IsAble { get { return _isAble; } }
 
         private void Start() {
             LoadCharacterData();
+            LoadEquipmentData();
         }
 
         private void LoadCharacterData() {
             // Firebase Character 정보를 Dictionary로 구성
-            FirebaseManager.Instance.ReadData(FirebasePath.CharacterData, jsonData => {
+            FirebaseManager.Instance.ReadCharacterData(jsonData => {
                 _characterData.characterData_dic = JsonConvert.DeserializeObject<Dictionary<string, CharacterStats>>(jsonData);
                 _isAble = true;
             });
+        }
+        /// <summary>
+        /// 장비 데이터 load
+        /// </summary>
+        private void LoadEquipmentData() {
+            FirebaseManager.Instance.ReadUserEquipmentData(jsonData => {
+                _equipment_list = JsonConvert.DeserializeObject<List<Equipment>>(jsonData);
+                // null 삭제
+                _equipment_list.RemoveAll(item => item == null);
+            });
+        }
+
+        public void RemoveEquipment(int firebaseIndex) {
+            FirebaseManager.Instance.RemoveEquipment(1);
+        }
+
+        public void AddEquipment(Equipment equipment) {
+            // 비어있는 공간 추가
+            int firebaseIndex = FindEmptyEquipmentIndex();
+            equipment.firebaseIndex = firebaseIndex;
+            Debug.Log(firebaseIndex);
+            // dataList에 추가
+            _equipment_list.Insert(firebaseIndex, equipment);
+            // Firebase에 추가
+            FirebaseManager.Instance.WriteEquipment(firebaseIndex, JsonConvert.SerializeObject(equipment));
+        }
+
+        /// <summary>
+        /// Firebase에서 Equipment가 비어있는 부분을 검색
+        /// </summary>
+        private int FindEmptyEquipmentIndex() {
+            Debug.Log(_equipment_list.Count);
+            if (_equipment_list.Count == 0) return 0; // 아이템이 없을 경우 0 리턴
+            int index = 0;
+            for (int i = 0; i < _equipment_list.Count; i++) {
+                Debug.Log(_equipment_list[i] == null);
+                int nextIndex = _equipment_list[i].firebaseIndex;
+
+                // 연속 되지 않은 인덱스 검색
+                if (nextIndex - index > 1) {
+                    return index + 1;
+                }
+                index = nextIndex;
+            }
+            return index + 1;
         }
 
         /// <summary>

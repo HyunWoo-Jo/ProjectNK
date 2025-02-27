@@ -37,9 +37,10 @@ namespace N.UI
         private void Awake() {
 #if UNITY_EDITOR
             // Assertion
-            Assert.IsTrue(_portraitUiData_list.Count != 0, "SelecteBottomPortraitView_UI");
+            string scriptName = typeof(SelecteBottomPortraitView_UI).Name;
+            Assert.IsTrue(_portraitUiData_list.Count != 0, scriptName);
             foreach (var portaitUi in _portraitUiData_list) {
-                Assert.IsNotNull(portaitUi, "SelecteBottomPortraitView_UI");
+                Assert.IsNotNull(portaitUi, scriptName);
             }
 #endif
         }

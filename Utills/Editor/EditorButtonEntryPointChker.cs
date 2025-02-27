@@ -3,9 +3,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using System;
-using N.Utills;
-namespace N.UI
-{
+namespace N.Utills {
 #if UNITY_EDITOR
     /// <summary>
     /// 버튼 진입점을 Inspector에서 확인하기 위한 클래스

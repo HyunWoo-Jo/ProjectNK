@@ -22,8 +22,6 @@ namespace N.Game
         private List<InputLogic> _inputLogic_list = new();
         private CombatLogic _combatLogic;
         private EnemyLogic _enemyLogic;
-        // Game Scene
-        [SerializeField] private UI_Controller _uiController;
 
         //Data
         private InGameData _gameData;
@@ -38,9 +36,6 @@ namespace N.Game
 
         //√ ±‚»≠
         void Awake() {
-#if UNITY_EDITOR
-            Assert.IsNotNull(_uiController);
-#endif
 
             _gameData = GetComponent<InGameData>();
             MainLogicManager.Instance.curPlayMainLogic = this;
@@ -129,7 +124,7 @@ namespace N.Game
 
         public void SetInput<T>() where T : InputLogic {
             T inputLogic = InstanceComponentObject<T>();
-            inputLogic.Init(this, _gameData, _uiController);
+            inputLogic.Init(this, _gameData, UI_Controller.Instance);
             _inputLogic_list.Add(inputLogic);     
         }
 

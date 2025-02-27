@@ -8,6 +8,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.Assertions;
 using DG.Tweening;
+using N.Utills;
 ////////////////////////////////////////////////////////////////////////////////////
 // Auto Generated Code
 #if UNITY_EDITOR
@@ -42,15 +43,16 @@ namespace N.UI
         private void Awake() {
 #if UNITY_EDITOR
             // Inventory Panel
-            Assert.IsNotNull(_inventroyOpenAnimation, typeof(InventoryView_UI).Name);
-            Assert.IsNotNull(_allButton, typeof(InventoryView_UI).Name);
-            Assert.IsNotNull(_equipButtons, typeof(InventoryView_UI).Name);
-            Assert.IsTrue(_equipTypeButton_list.Count == 4, typeof(InventoryView_UI).Name);
+            string scriptName = typeof(InventoryView_UI).Name;
+            Assert.IsNotNull(_inventroyOpenAnimation, scriptName);
+            Assert.IsNotNull(_allButton, scriptName);
+            Assert.IsNotNull(_equipButtons, scriptName);
+            Assert.IsTrue(_equipTypeButton_list.Count == 4, scriptName);
             foreach(var item in _equipTypeButton_list) {
-                Assert.IsNotNull(item, typeof(InventoryView_UI).Name);
+                Assert.IsNotNull(item, scriptName);
             }
             // Selete Panel
-            Assert.IsNotNull(_seleteEquipButton, typeof(InventoryView_UI).Name);
+            Assert.IsNotNull(_seleteEquipButton, scriptName);
 #endif
             InitButton();
         }

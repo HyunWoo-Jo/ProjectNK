@@ -38,10 +38,11 @@ namespace N.UI
         private void Awake() {
             // Assertion
 #if UNITY_EDITOR
-            Assert.IsNotNull(_rectTransform);
-            Assert.IsNotNull(_ammoCountText);
-            Assert.IsNotNull(_countBgImage);
-            Assert.IsNotNull(_gageImage);
+            string scriptName = typeof(AimView_UI).Name;
+            Assert.IsNotNull(_rectTransform, scriptName);
+            Assert.IsNotNull(_ammoCountText, scriptName);
+            Assert.IsNotNull(_countBgImage, scriptName);
+            Assert.IsNotNull(_gageImage, scriptName);
 #endif
         }
 

@@ -27,7 +27,8 @@ namespace N.UI
         [SerializeField] private Image fill_img;
         private void Awake() {
 #if UNITY_EDITOR
-            Assert.IsNotNull(fill_img, "EnemyHpBarView_UI");
+            string scriptName = typeof(EnemyHpBarView_UI).Name;
+            Assert.IsNotNull(fill_img, scriptName);
 #endif
         }
 

@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using System;
 using UnityEngine.EventSystems;
 using NUnit.Framework;
+using N.Utills;
 ////////////////////////////////////////////////////////////////////////////////////
 // Auto Generated Code
 #if UNITY_EDITOR
@@ -29,7 +30,8 @@ namespace N.UI
 
         private void Awake() {
 #if UNITY_EDITOR
-            Assert.IsNotNull(_eventTrigger, "AutoButtonView_UI");
+            string scriptName = typeof(AutoButtonView_UI).Name;
+            Assert.IsNotNull(_eventTrigger, scriptName);
 #endif
         }
         public void InitButton(Action downAction, bool isAuto) {
