@@ -67,6 +67,7 @@ namespace N.Network
             if (snapshot.Exists) {
                 Debug.Log("Read User Item Data :" + snapshot.GetRawJsonValue());
                 susCallback(snapshot.GetRawJsonValue());
+
             }
         }
 
@@ -75,18 +76,19 @@ namespace N.Network
         /// </summary>
         /// <param name="firebaseIndex"></param>
         /// <param name="jsonData"></param>
-        public async void WriteEquipment(int firebaseIndex, string jsonData) {
-            DatabaseReference dataRef = _databaseReference.Child("UserData").Child(UID).Child("Equipment").Child(firebaseIndex.ToString()); // root 설정
-            Debug.Log(jsonData);
+        public async void WriteEquipment(string jsonData, Action<string> keyCallback) {
+            DatabaseReference dataRef = _databaseReference.Child("UserData").Child(UID).Child("Equipment").Push();// root 설정
             await dataRef.SetRawJsonValueAsync(jsonData);
+
+            keyCallback?.Invoke(dataRef.Key);
         }
 
         /// <summary>
         /// Item 삭제
         /// </summary>
-        /// <param name="firebaseIndex"></param>
-        public async void RemoveEquipment(int firebaseIndex) {
-            DatabaseReference dataRef = _databaseReference.Child("UserData").Child(UID).Child("Equipment").Child(firebaseIndex.ToString());
+        /// <param name="key"></param>
+        public async void RemoveEquipment(string key) {
+            DatabaseReference dataRef = _databaseReference.Child("UserData").Child(UID).Child("Equipment").Child(key);
             await dataRef.RemoveValueAsync();
         }
     }

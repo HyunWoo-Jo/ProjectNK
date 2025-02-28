@@ -11,9 +11,11 @@ namespace N.Data
     }
     [Serializable]
     public class Equipment {
-        public int firebaseIndex; // 인덱스
         public string name; // 이름
         public EquipmentType type; // 종류
         public float point; // 방어 수치
+    }
+    public class EquipmentData : Equipment{
+        public string key; // 인덱스
     }
 }
