@@ -4,9 +4,10 @@ using UnityEngine;
 namespace N.Data
 {
     public enum EquipmentType {
+        All,
         Head,
         Armor,
-        Glove,
+        Belt,
         Shoes,
     }
     [Serializable]

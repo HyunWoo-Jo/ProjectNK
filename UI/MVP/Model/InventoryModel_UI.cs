@@ -8,10 +8,11 @@ namespace N.UI {
         // Your logic here
         #region internal
         public enum InvenType {
-            Equipment
+            None = 0,
+            Equipment,
         }
-        internal InvenType invenType;
-        internal int seletedType = 0;
+        internal InvenType invenType = InvenType.None;
+        internal int selectedType = 0;
         #endregion
     }
 }

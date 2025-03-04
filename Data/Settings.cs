@@ -26,6 +26,7 @@ namespace N.Data
 
         #region Game
         public static int targetFrame = 120;
+        public static bool isTimeStop = false;
         #endregion
 
         #region Scene

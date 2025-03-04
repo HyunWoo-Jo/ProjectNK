@@ -76,6 +76,7 @@ namespace N.Game
             DataManager.Instance.ReleaseAssetAll();
         }
         void Update() {
+            if (Settings.isTimeStop) return;
             // Input Modules 제어
             foreach (var inputLogic in _inputLogic_list) {
                 inputLogic.Work();
@@ -86,6 +87,7 @@ namespace N.Game
         }
 
         private void LateUpdate() {
+            if (Settings.isTimeStop) return;
             // Camera Module 제어
             _cameraLogic?.Work();
             //

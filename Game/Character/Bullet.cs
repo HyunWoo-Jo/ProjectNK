@@ -1,3 +1,4 @@
+using N.Data;
 using N.DesignPattern;
 using UnityEngine;
 namespace N.Game
@@ -30,6 +31,7 @@ namespace N.Game
 
         void Update()
         {
+            if (Settings.isTimeStop) return;
             //Move
             transform.position += transform.forward * _moveSpeed * Time.deltaTime;
         }

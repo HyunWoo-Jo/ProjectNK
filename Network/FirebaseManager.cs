@@ -79,7 +79,6 @@ namespace N.Network
         public async void WriteEquipment(string jsonData, Action<string> keyCallback) {
             DatabaseReference dataRef = _databaseReference.Child("UserData").Child(UID).Child("Equipment").Push();// root ¼³Á¤
             await dataRef.SetRawJsonValueAsync(jsonData);
-
             keyCallback?.Invoke(dataRef.Key);
         }
 

@@ -24,6 +24,7 @@ namespace N.Data
             LoadCharacterData();
             LoadEquipmentData();
         }
+        
 
 
         private void LoadCharacterData() {
@@ -50,6 +51,11 @@ namespace N.Data
                  );
             });
         }
+
+        public Dictionary<string, EquipmentData> GetEquipData() {
+            return _equipData_dic;
+        }
+
         // equipment 제거
         public void RemoveEquipment(string key) {
             _equipData_dic.Remove(key);
@@ -60,8 +66,11 @@ namespace N.Data
         public void AddEquipment(Equipment equipment) {
             // Firebase에 추가
             FirebaseManager.Instance.WriteEquipment(JsonConvert.SerializeObject(equipment), (key) => {
-                var eqd = equipment as EquipmentData;
+                var eqd = new EquipmentData();
                 eqd.key = key;
+                eqd.name = equipment.name;
+                eqd.type = equipment.type;
+                eqd.point = equipment.point;
                 _equipData_dic.Add(key, eqd);
             });
         }
@@ -87,7 +96,7 @@ namespace N.Data
             if (!_data_dic.TryGetValue(key, out object obj)) {
                 AsyncOperationHandle<T> handle = Addressables.LoadAssetAsync<T>(key);
                 handle.WaitForCompletion();
-                result = handle.Result;
+                result = handle.Result;         
                 _data_dic.Add(key, result);
                 _dataCount_dic.Add(key, 1);
                 _handle_dic.Add(key, handle);
@@ -100,6 +109,10 @@ namespace N.Data
             }
         }
 
+        /// <summary>
+        /// 삭제
+        /// </summary>
+        /// <param name="key"></param>
         public void ReleaseAsset(string key) {
             if(_dataCount_dic.TryGetValue(key, out int count)) {
                 _dataCount_dic[key]--;
