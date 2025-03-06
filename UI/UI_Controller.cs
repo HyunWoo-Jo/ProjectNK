@@ -12,14 +12,14 @@ namespace N.UI
     public class UI_Controller : Singleton<UI_Controller>
     {
         private Canvas _mainCanvas;
-        [SerializeField] private GameObject _parentCanvas_prefab;
+        [SerializeField] private GameObject _parentCanvasPrefab;
         private List<GameObject> instantCanvas_list = new();
         private Dictionary<string, string> _key_dic = new();
         
         protected override void Awake() {
             base.Awake();
 #if UNITY_EDITOR
-            Assert.IsNotNull(_parentCanvas_prefab);
+            Assert.IsNotNull(_parentCanvasPrefab);
 #endif
             if (_key_dic.Count == 0) AddKey();
             FindMainCanvas();
@@ -35,7 +35,7 @@ namespace N.UI
 
         public GameObject InstantiateParentCanvas(int order) {
             if (_mainCanvas == null) FindMainCanvas();
-            GameObject canvasObj = GameObject.Instantiate(_parentCanvas_prefab);
+            GameObject canvasObj = GameObject.Instantiate(_parentCanvasPrefab);
             canvasObj.transform.SetParent(_mainCanvas.transform);
             instantCanvas_list.Add(canvasObj);
             Canvas canvas = canvasObj.GetComponent<Canvas>();
@@ -111,6 +111,7 @@ namespace N.UI
             _key_dic.Add(typeof(EnemyHpBarView_UI).Name, "EnemyHPBar_UI.prefab");
             _key_dic.Add(typeof(AutoButtonView_UI).Name, "AutoButton_UI.prefab");
             _key_dic.Add(typeof(InventoryView_UI).Name, "Inventory_UI.prefab");
+            _key_dic.Add(typeof(PauseView_UI).Name, "Pause_UI.prefab");
         }
 
 

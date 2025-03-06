@@ -15,6 +15,7 @@ namespace N.Game
         InputReloadingUILogic,
         InputEnemyHpBarLogic,
         InputAutoButtonLogic,
+        InputPauseLogic,
     }
 
 
@@ -285,6 +286,17 @@ namespace N.Game
             } else {
                 _gameData.playState = PlayState.AI;
             }
+        }
+    }
+    // Pause Button
+    public class InputPauseLogic : InputLogic {
+        public override void Instance() {
+            // Pause UI »ý¼º
+            _uiController.InstantiateUI<PauseView_UI>(10);
+        }
+
+        public override void Work() {
+            
         }
     }
 }

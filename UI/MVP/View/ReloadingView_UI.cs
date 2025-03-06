@@ -21,11 +21,11 @@ namespace N.UI
             _presenter = new ReloadingPresenter_UI();
             _presenter.Init(this);  
         }
-        [SerializeField] private Image _fillImg;
+        [SerializeField] private Image _fillImage;
         // Your logic here
         private void Awake() {
 #if UNITY_EDITOR
-            Assert.IsNotNull(_fillImg);    
+            Assert.IsNotNull(_fillImage);    
 #endif
         }
         
@@ -41,7 +41,7 @@ namespace N.UI
 
         #region internal
         void IReloadingView_UI.UpdateFillUI(float amount) {
-            _fillImg.fillAmount = amount;
+            _fillImage.fillAmount = amount;
         }
         #endregion
     }
