@@ -290,13 +290,25 @@ namespace N.Game
     }
     // Pause Button
     public class InputPauseLogic : InputLogic {
+        private PauseView_UI _pauseView;
         public override void Instance() {
             // Pause UI 생성
-            _uiController.InstantiateUI<PauseView_UI>(10);
+            _pauseView = _uiController.InstantiateUI<PauseView_UI>(10);
+            foreach (var character in _playMainLogic._fieldCharacter_list) {
+                _pauseView.AddCharacterSlot(character.Stats);
+
+            }
         }
 
         public override void Work() {
-            
+            // 활성화 상태이면 UI 업데이트
+            if (_pauseView.IsActive) {
+                for (int i = 0; i < _playMainLogic._fieldCharacter_list.Count; i++) {
+                    var character = _playMainLogic._fieldCharacter_list[i];
+                    // UI Slot 설정
+                    _pauseView.SetCharacterPoint(i, 0, 0, 0, 0);
+                }
+            }
         }
     }
 }

@@ -12,7 +12,7 @@ using DG.Tweening;
 #endif
 namespace N.UI
 {
-    public interface IAimView_UI : IView_UI {
+     public interface IAimView_UI : IView_UI {
         // Your logic here
        internal void ChangeAimPos(Vector2 pos);
        internal void UpdateAmmoUI(int maxAmmo, int curAmmo);
