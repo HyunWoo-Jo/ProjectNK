@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Assertions;
@@ -7,6 +8,7 @@ namespace N.Game
     public class ChapterController : MonoBehaviour {
         [SerializeField] private NavMeshAgent _unitGroupAgent;
         [SerializeField] private Camera _mapCamera;
+        [SerializeField] private LineRenderer _lineRenderer;
         // main Camera
         private Vector3 _mainCameraOffset = new Vector3(0, 18.9f, -4f);
         private float _mainCameraLerpSpeed = 2f;
@@ -14,12 +16,14 @@ namespace N.Game
         private Vector3 _mapCameraOffset = new Vector3(0, 5f, 0);
         // nav agent
         private float _maxNavMeshDistance = 1.0f; // 유효한 NavMesh로부터 최대 거리 설정
-
+        private int _navIndex = -1;
+       
         private void Awake() {
 #if UNITY_EDITOR
             // 검증
             Assert.IsNotNull(_unitGroupAgent);
             Assert.IsNotNull(_mapCamera);
+            Assert.IsNotNull(_lineRenderer);
 #endif
             _mapCamera.aspect = 1f;
             _mapCamera.rect = new Rect(0, 0, 1, 1);
@@ -47,10 +51,30 @@ namespace N.Game
                     // 클릭된 위치가 NavMesh 위에 유효한지 확인
                     if (NavMesh.SamplePosition(hit.point, out navHit, _maxNavMeshDistance, NavMesh.AllAreas)) {
                         // 유효한 NavMesh 위치로 이동
+                        NavMeshPath navMeshPath = new ();
+                        _unitGroupAgent.CalculatePath(navHit.position, navMeshPath);
+
+                        // 목적지 설정
                         _unitGroupAgent.SetDestination(navHit.position);
+                        
+                        // LineRenderer 업데이트
+                        Vector3[] corners = navMeshPath.corners.Reverse().ToArray();
+                        _lineRenderer.positionCount = corners.Length;
+                        _lineRenderer.SetPositions(corners);
+                        _navIndex = corners.Length - 1;
                     }
                 }
             }
+            if(_lineRenderer.positionCount > 0) {
+                _navIndex = _lineRenderer.positionCount - 1;
+                _lineRenderer.SetPosition(_navIndex, _unitGroupAgent.transform.position);
+                if (_navIndex > 0 && Vector3.Distance(_lineRenderer.GetPosition(_navIndex), _lineRenderer.GetPosition(_navIndex - 1)) < 0.1f) {
+
+                    _lineRenderer.positionCount = _navIndex;
+             
+                }
+            }
+
         }
 
         // Map Camera 이동

@@ -12,5 +12,9 @@ namespace N.UI
             _view = (View)view;
             return this;
         }
+
+        protected string ClassName() {
+            return nameof(ClassName); 
+        }
     }
 }
