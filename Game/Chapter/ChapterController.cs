@@ -17,7 +17,9 @@ namespace N.Game
         // nav agent
         private float _maxNavMeshDistance = 1.0f; // 유효한 NavMesh로부터 최대 거리 설정
         private int _navIndex = -1;
-       
+        private bool _isOnUI = false;
+        private int _pathLayer;
+        private int _enemyLayer;
         private void Awake() {
 #if UNITY_EDITOR
             // 검증
@@ -28,24 +30,53 @@ namespace N.Game
             _mapCamera.aspect = 1f;
             _mapCamera.rect = new Rect(0, 0, 1, 1);
             _mapCamera.orthographicSize = 7f;
+            _pathLayer = LayerMask.GetMask("Path");
+            _enemyLayer = LayerMask.GetMask("Enemy");
         }
 
         void Update() {
             WorkNavAgent();
             MoveMapCamera();
             MoveMainCamera();
+            ClickEnemyObject();
         }
+
+        /// <summary>
+        /// Enemy Click Event 처리
+        /// </summary>
+        private void ClickEnemyObject() {
+            if (Input.GetMouseButtonDown(0) && !_isOnUI) {
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit hit;
+
+                if (Physics.Raycast(ray, out hit, 100, _enemyLayer)) {
+                    var hitEnemy = hit.collider.gameObject.GetComponent<ChapterEnemy>();
+                    if (hitEnemy != null) {
+                        // Chapter 정보 업데이트
+                        var mainLogic = MainLogicManager.Instance;
+                        mainLogic.spawnDataList = hitEnemy.EnemySpawnDataList;
+                        mainLogic.cameraLogicClassName = hitEnemy.CameraLogicClassName;
+                        mainLogic.combatLogicClassName = hitEnemy.CombatLogicClassName;
+                        mainLogic.enemyLogicClassName = hitEnemy.EnemyLogicClassName;
+                        mainLogic.inputLogicClassName_list = hitEnemy.InputLogicClassName;
+
+                    }
+
+                }
+            }
+        }
+
 
         /// <summary>
         /// unit Group을 움직임
         /// </summary>
         private void WorkNavAgent() {
-            if (Input.GetMouseButtonDown(0)) // 마우스 왼쪽 클릭 시
+            if (Input.GetMouseButtonDown(0) && !_isOnUI) // 마우스 왼쪽 클릭 시
             {
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hit;
 
-                if (Physics.Raycast(ray, out hit)) // 클릭된 지점이 있는지 확인
+                if (Physics.Raycast(ray, out hit, 100, _pathLayer)) // 클릭된 지점이 있는지 확인
                 {
                     NavMeshHit navHit;
                     // 클릭된 위치가 NavMesh 위에 유효한지 확인
@@ -58,20 +89,21 @@ namespace N.Game
                         _unitGroupAgent.SetDestination(navHit.position);
                         
                         // LineRenderer 업데이트
-                        Vector3[] corners = navMeshPath.corners.Reverse().ToArray();
+                        Vector3[] corners = navMeshPath.corners.Reverse().Select(coner => coner + new Vector3(0,0.03f,0)).ToArray();
                         _lineRenderer.positionCount = corners.Length;
                         _lineRenderer.SetPositions(corners);
                         _navIndex = corners.Length - 1;
                     }
                 }
+
             }
+            // LineRender position에 맞게 제거
             if(_lineRenderer.positionCount > 0) {
                 _navIndex = _lineRenderer.positionCount - 1;
                 _lineRenderer.SetPosition(_navIndex, _unitGroupAgent.transform.position);
-                if (_navIndex > 0 && Vector3.Distance(_lineRenderer.GetPosition(_navIndex), _lineRenderer.GetPosition(_navIndex - 1)) < 0.1f) {
+                if (_navIndex > 0 && Vector3.Distance(_lineRenderer.GetPosition(_navIndex), _lineRenderer.GetPosition(_navIndex - 1)) < 0.15f) {
 
                     _lineRenderer.positionCount = _navIndex;
-             
                 }
             }
 

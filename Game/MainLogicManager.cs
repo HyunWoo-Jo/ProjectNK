@@ -10,10 +10,11 @@ namespace N.Game
     /// </summary>
     public class MainLogicManager : Singleton<MainLogicManager> {
         public EnemySpawnDataList spawnDataList;
-        public CameraLogicClassName _cameraLogicClassName = CameraLogicClassName.StandardGameCameraLogic;
-        public CombatLogicClassName _combatLogicClassName = CombatLogicClassName.StandardCombatLogic;
-        public List<InputLogicClassName> _inputLogicClassName_list = new List<InputLogicClassName> { InputLogicClassName.InputCombatAimLogic };
-        public EnemyLogicClassName _enemyLogicClassName = EnemyLogicClassName.StandardEnemyLogic;
+        public CameraLogicClassName cameraLogicClassName = CameraLogicClassName.StandardGameCameraLogic;
+        public CombatLogicClassName combatLogicClassName = CombatLogicClassName.StandardCombatLogic;
+        public EnemyLogicClassName enemyLogicClassName = EnemyLogicClassName.StandardEnemyLogic;
+        public List<InputLogicClassName> inputLogicClassName_list = new List<InputLogicClassName> { InputLogicClassName.InputCombatAimLogic };
+        
         public List<string> characterName_list = new List<string> { "Lux", "Nami", "Nunu", "Ryze" };
         public PlayMainLogic curPlayMainLogic;
        
@@ -37,14 +38,14 @@ namespace N.Game
         /// </summary>
         /// <param name="mainLogic"></param>
         internal void SendModules(PlayMainLogic mainLogic) {
-            InvokeGenericMethod(mainLogic, "SetCamera", _cameraLogicClassName.ToString());
+            InvokeGenericMethod(mainLogic, "SetCamera", cameraLogicClassName.ToString());
 
-            foreach(var inputClassName in _inputLogicClassName_list) {
+            foreach(var inputClassName in inputLogicClassName_list) {
                 InvokeGenericMethod(mainLogic, "SetInput", inputClassName.ToString());
             }
 
-            InvokeGenericMethod(mainLogic, "SetCombat", _combatLogicClassName.ToString());
-            InvokeGenericMethod(mainLogic, "SetEnemy", _enemyLogicClassName.ToString());
+            InvokeGenericMethod(mainLogic, "SetCombat", combatLogicClassName.ToString());
+            InvokeGenericMethod(mainLogic, "SetEnemy", enemyLogicClassName.ToString());
 
             mainLogic.SetCharacter(characterName_list);
         }
